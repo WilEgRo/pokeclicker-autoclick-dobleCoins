@@ -1,319 +1,211 @@
-# PokéClicker Security Lab (Phase 1: Runtime Inspector)
+# ⚡ PokéClicker AutoClick & DobleCoins Lab
 
-**PokéClicker Security Lab** es una extensión de navegador independiente diseñada con propósitos educativos para el análisis de seguridad e inspección de ingeniería inversa del cliente web de **PokéClicker** (`https://www.pokeclicker.com/*`).
+<div align="center">
+
+![Version](https://img.shields.io/badge/version-v0.1.0-blue.svg?style=for-the-badge)
+![Manifest](https://img.shields.io/badge/manifest-v3-success.svg?style=for-the-badge)
+![PokéClicker](https://img.shields.io/badge/PokéClicker-v0.10.x+-orange.svg?style=for-the-badge)
+![Plataforma](https://img.shields.io/badge/plataforma-Chrome%20%7C%20Brave%20%7C%20Edge%20%7C%20Opera-blueviolet.svg?style=for-the-badge)
+![Licencia](https://img.shields.io/badge/licencia-MIT-green.svg?style=for-the-badge)
+
+**Extensión oficial de navegador para [PokéClicker](https://www.pokeclicker.com/) con funciones avanzadas de automatización, multiplicador de recompensas y consola de investigación en tiempo real.**
+
+[Características](#-características-principales) • [Instalación](#-guía-de-instalación-paso-a-paso) • [Uso](#-guía-de-uso) • [Arquitectura](#-estructura-del-proyecto) • [Preguntas Frecuentes](#-preguntas-frecuentes)
 
 ---
 
-## 1. Arquitectura del Proyecto
+</div>
+
+## 📖 Descripción del Proyecto
+
+**PokéClicker AutoClick & DobleCoins** es una potente extensión basada en **Manifest V3** diseñada para integrarse de forma nativa, fluida y segura en el juego web **PokéClicker**. Desarrollada con un diseño moderno y minimalista, incorpora un panel flotante (*Shadow DOM*) que no interfiere con los estilos ni el rendimiento del juego original.
+
+El proyecto combina dos herramientas esenciales para la mejor experiencia de juego:
+1. ⚡ **AutoClick Inteligente:** Clics automáticos ultra rápidos (hasta 30 CPS) con reconocimiento dinámico del tipo de batalla.
+2. 💰 **DobleCoins (Reward Modifier):** Multiplicador seguro de monedas y divisas (`2x`, `5x`, `10x` o personalizado) con protección estricta contra inconsistencias de guardado.
+
+---
+
+## ✨ Características Principales
+
+### ⚡ 1. AutoClick Inteligente de Alto Rendimiento
+* **Velocidad Configurable:** Ajuste continuo entre **1 y 30 CPS** (Clicks Por Segundo) mediante control deslizante o entrada numérica.
+* **Integración Nativa con el Bucle del Juego:** Invoca directamente los métodos de combate (`Battle.clickAttack()`), evitando las limitaciones e ineficiencias de emular eventos sobre el árbol DOM.
+* **Compatibilidad Multi-Modo Dinámica:**
+  * 🌿 **Rutas Salvajes:** Ataque continuo a Pokémon salvajes.
+  * 🥊 **Gimnasios (`GymBattle`):** Detección automática del estado del líder y combate sin pausas.
+  * 🗝️ **Mazmorras (`DungeonBattle`):** Soporte en tiempo real durante la exploración de calabozos.
+  * 🏆 **Battle Frontier y Batallas Temporales.**
+* **Pausa Post-KO Personalizable:** Retardo configurable (0 ms a 1000 ms) al derrotar a un enemigo para sincronizarse de manera orgánica con las animaciones de reaparición.
+* **Telemetría en Vivo:** Monitoreo instantáneo de clics por sesión, daño por clic calculado, vida restante del enemigo y latencia media de KO.
+
+### 💰 2. DobleCoins & Multiplicador de Monedas (Rewards Lab)
+* **Modo DobleCoins (2x) con 1 Clic:** Duplica automáticamente las monedas obtenidas por derrotar Pokémon en rutas salvajes.
+* **Multiplicador Flexible:** Botones rápidos de preset (`1x`, `2x`, `5x`, `10x`, `25x`, `100x`) y selector de valor personalizado.
+* **Multi-Divisa:** Soporte selectivo para:
+  * 💵 **PokéCoins (`Money`):** Moneda principal de combate.
+  * 🪙 **Dungeon Tokens (`DungeonToken`):** Fichas para ingresar y explorar mazmorras.
+  * 📜 **Quest Points (`QuestPoint`):** Puntos de misiones para objetos clave.
+* **Modos de Operación Seguros:**
+  * `OFF`: Comportamiento estándar del juego 100% intacto.
+  * `SIMULATION`: Muestra y audita en tiempo real las ganancias estimadas en el panel sin modificar la billetera real.
+  * `ACTIVE`: Aplica la bonificación mediante transacciones atómicas verificadas.
+* **Protección Anti-Corrupción:** Aislamiento de contexto estricto. Las tiendas, transacciones de guardado (`App.game.save()`) y recompensas fijas no son alteradas, protegiendo tus partidas contra archivos de guardado corruptos.
+
+### 🔬 3. Consola Forense & Inspector de Runtime
+* **Diseño Glassmorphism / Dark Mode:** Interfaz elegante, flotante, arrastrable y minimizable construida bajo Shadow DOM aislado.
+* **Live State Monitor:** Consulta instantánea de todos los saldos de la billetera (`Wallet`), estadísticas de captura, encuentros shiny y contadores de combate.
+* **Inspector Reactivo de Knockout.js:** Inspección en vivo y segura de observables de Knockout (`App.game`, `Battle`, `player`, etc.) utilizando `.peek()` para evitar efectos secundarios.
+* **Monitor de Eventos (`Record Changes`):** Registro de transiciones y cambios de estado en tiempo real.
+* **Exportación Forense:** Descarga de reportes estructurados en formato JSON con la firma del runtime y diagnósticos completos con un solo clic.
+
+---
+
+## 🚀 Guía de Instalación Paso a Paso
+
+La extensión es compatible con cualquier navegador basado en **Chromium** (**Google Chrome**, **Brave**, **Microsoft Edge**, **Opera**, **Vivaldi**, etc.).
+
+### Paso 1: Obtener el Código
+Puedes clonar el repositorio con `git` o descargar el archivo ZIP:
+
+```bash
+git clone https://github.com/WilEgRo/pokeclicker-autoclick-dobleCoins.git
+```
+
+> *Si descargaste el archivo `.zip`, descomprímelo en una carpeta accesible de tu ordenador.*
+
+### Paso 2: Abrir la Página de Extensiones de tu Navegador
+Ingresa la URL correspondiente en la barra de direcciones de tu navegador:
+* **Google Chrome / Brave:** `chrome://extensions`
+* **Microsoft Edge:** `edge://extensions`
+* **Opera:** `opera://extensions`
+
+### Paso 3: Activar el Modo de Desarrollador
+* En la esquina superior derecha, activa el interruptor **Modo de desarrollador** (*Developer Mode*).
+
+### Paso 4: Cargar la Extensión
+1. Haz clic en el botón **Cargar descomprimida** (*Load unpacked*).
+2. Selecciona la carpeta raíz del proyecto (donde se ubica el archivo `manifest.json`).
+3. ¡Listo! Verás la extensión cargada con el nombre **PokéClicker Security Lab / AutoClick & DobleCoins**.
+
+### Paso 5: Ejecutar el Juego
+Abre una nueva pestaña y navega a:
+👉 **[https://www.pokeclicker.com/](https://www.pokeclicker.com/)**
+
+La consola flotante aparecerá automáticamente en la esquina superior derecha del juego lista para usarse.
+
+---
+
+## 🎮 Guía de Uso
+
+```
+┌──────────────────────────────────────────────────────────────┐
+│  POKÉCLICKER LAB: AutoClick & DobleCoins                     │
+├──────────────────────────────────────────────────────────────┤
+│  [⚡ Auto Click] [💰 Rewards Lab] [Live State] [Inspector]    │
+└──────────────────────────────────────────────────────────────┘
+```
+
+### Activación del AutoClick
+1. Haz clic en el botón superior rápido **`Auto Click [ON/OFF]`** o dirígete a la pestaña **`⚡ Auto Click`**.
+2. Presiona el botón central grande **`INICIAR AUTO CLICK`**.
+3. Ajusta el deslizador de **CPS** a la velocidad deseada (ej. `20` o `30` clicks/seg).
+4. El sistema comenzará a atacar automáticamente a cualquier enemigo en pantalla sin necesidad de enfocar la ventana.
+
+### Activación de DobleCoins (2x) o Multiplicador
+1. Abre la pestaña **`💰 Rewards Lab`**.
+2. En la sección **Battle Reward Modifier**, selecciona el modo **`ACTIVE`**.
+3. Selecciona el chip de **`2x`** para duplicar tus monedas (o pulsa `+` / `-` para fijar el número deseado).
+4. Elige las divisas que deseas multiplicar (por defecto **💵 Money**).
+5. Al derrotar a cualquier Pokémon salvaje en las rutas, recibirás automáticamente el doble de monedas con verificación en tiempo real en la pantalla.
+
+---
+
+## 📂 Estructura del Proyecto
 
 ```text
-pokeclicker-security-lab/
+pokeclicker-autoclick-dobleCoins/
+├── manifest.json              # Configuración Manifest V3 y permisos
+├── background.js             # Service Worker de ciclo de vida en segundo plano
+├── content.js                # Content script: puente con MAIN world y Shadow DOM
+├── page-bridge.js            # Inyección en el contexto de ejecución de PokéClicker
+├── engine.js                 # Motor de eventos y sincronización
+├── bridge.js                 # Enrutador de mensajes bidireccional
 │
-├── manifest.json              # Manifest V3 con aislamiento estricto de dominio
-├── background.js             # Service Worker minimalista (sin telemetría ni red externa)
-├── content.js                # Content script: inyección en MAIN world y montaje Shadow DOM
-├── page-bridge.js            # Puente de comunicación ejecutado en el contexto de la página
+├── core/                     # Módulos del núcleo del sistema
+│   ├── battle-state-machine.js # Máquina de estados de combate y transición de KOs
+│   ├── object-inspector.js   # Desenrollador seguro de observables Knockout
+│   ├── function-inspector.js # Catalogación dinámica de funciones del juego
+│   ├── runtime-detector.js   # Detección de versión y fingerprinting de App.game
+│   ├── diff-engine.js        # Motor de comparación de estado (snapshots)
+│   ├── instrumentation.js    # Interceptación de funciones y hooks
+│   ├── module-registry.js    # Registro de módulos internos
+│   └── message-bridge.js     # Canal seguro ISOLATED ↔ MAIN
 │
-├── core/
-│   ├── object-inspector.js   # Inspección segura sin efectos secundarios, getters protegidos
-│   ├── function-inspector.js # Catalogación heurística de funciones sin ejecución
-│   ├── runtime-detector.js   # Detección dinámica, versionado y fingerprinting
-│   ├── diff-engine.js        # Detección de cambios y comparación de snapshots
-│   ├── instrumentation.js    # Infraestructura segura de interceptación (inactiva en Fase 1)
-│   ├── module-registry.js    # Registro modular con bloqueo estricto de fases
-│   └── message-bridge.js     # Canal bidireccional seguro (MAIN ↔ ISOLATED)
+├── modules/                  # Extensiones funcionales
+│   ├── diagnostics/          # Diagnóstico del ciclo de vida de combates
+│   │   ├── battle-lifecycle-diagnostics.js
+│   │   └── runtime-diagnostics.js
+│   └── rewards/              # Motor de DobleCoins y economía
+│       ├── battle-reward-modifier.js  # Multiplicador controlado en tiempo real
+│       └── reward-economy-lab.js      # Monitor y telemetría de wallet
 │
-├── modules/
-│   └── diagnostics/
-│       └── runtime-diagnostics.js  # Auditoría integral y generación de reporte local
+├── ui/                       # Interfaz visual de usuario
+│   ├── panel.html            # Plantilla estructural de la consola
+│   ├── panel.css             # Estilos oscuros / glassmorphism
+│   └── panel.js              # Controlador interactivo y enlace de eventos
 │
-├── ui/
-│   ├── panel.html            # Consola visual flotante
-│   ├── panel.css             # Tema oscuro forense / glassmorphism
-│   └── panel.js              # Controlador interactivo y exportador JSON local
+├── test/                     # Pruebas unitarias automatizadas
+│   └── inspector.test.js     # Pruebas con Node.js Test Runner
 │
-├── test/
-│   └── inspector.test.js     # Suite de pruebas unitarias (Node.js test runner)
-│
-├── package.json              # Configuración y script de pruebas
-└── README.md                 # Documentación completa y propuesta de Fase 2
+├── package.json              # Metadata y scripts de prueba
+├── LICENSE                   # Licencia de código abierto MIT
+└── README.md                 # Documentación completa del proyecto
 ```
 
 ---
 
-## 2. Instrucciones para Cargar la Extensión (Chrome / Opera / Edge)
+## 🧪 Pruebas Unitarias
 
-1. Abre tu navegador basado en Chromium (Google Chrome, Opera, Brave, Microsoft Edge).
-2. Dirígete a la página de extensiones:
-   * En **Chrome / Brave**: `chrome://extensions`
-   * En **Opera**: `opera://extensions`
-   * En **Edge**: `edge://extensions`
-3. Activa el interruptor **Modo de desarrollador** (*Developer mode*) en la esquina superior derecha.
-4. Haz clic en el botón **Cargar descomprimida** (*Load unpacked*).
-5. Selecciona la carpeta del proyecto:
-   `c:\Users\wilson\Downloads\pokeclicker`
-6. Abre una pestaña y navega a [https://www.pokeclicker.com/](https://www.pokeclicker.com/).
-7. Observarás la consola flotante **POKÉCLICKER SECURITY LAB** en la esquina superior derecha.
+Para ejecutar la suite de pruebas localmente y validar la integridad de los inspectores:
 
----
-
-## 3. Procedimiento de Prueba y Uso
-
-1. **Apertura y Diagnóstico Automático:** Al cargar el juego, la consola detecta automáticamente si `App` y `App.game` están disponibles.
-2. **Auto Clicker (⚡ Auto Click):**
-   * Puedes activarlo/desactivarlo rápidamente desde la barra superior (`Auto Click [ON/OFF]`) o con el botón principal en la pestaña **Auto Click**.
-   * Regula la velocidad entre **1 y 30 CPS** mediante el control deslizante o el campo numérico.
-   * Visualiza en tiempo real: clics de sesión, modo de combate detectado (`Battle`, `GymBattle`, `DungeonBattle`, etc.), daño por clic calculado y barra de vida del Pokémon objetivo.
-3. **Refresh Runtime:** Haz clic en el botón `⟳ Refresh Runtime` para forzar un escaneo dinámico de los objetos globales, observables de Knockout y funciones candidatas.
-4. **Pestaña Live State:** Consulta en tiempo real las monedas activas en la billetera (`Money`, `QuestPoint`, `DungeonToken`, etc.), estadísticas observadas y objetivo de combate.
-5. **Pestaña Candidates:** Explora las funciones descubiertas clasificadas por sistema:
-   * **Economy:** Métodos de ganancia y coste (`gainMoney`, `gainQuestPoints`, `addAmount`, etc.).
-   * **Shiny:** Generadores y selectores de probabilidad RNG (`generateShiny`, `calculateShinyChance`, etc.).
-   * **Quests:** Reclamación y seguimiento de misiones (`claimReward`, `canStart`, etc.).
-   * **Battle:** Métodos de ataque y daño (`clickAttack`, `pokemonAttack`, etc.).
-5. **Interactive Inspector:** Escribe cualquier ruta (por ejemplo `App.game.party` o `Battle`) y haz clic en `Inspect` para obtener una vista estructurada JSON segura.
-6. **Record Changes (Event Monitor):**
-   * Haz clic en `Record Changes`.
-   * Realiza acciones en el juego (ej. haz clic para atacar o captura un Pokémon).
-   * Observa en la pestaña **Changes** y en el terminal inferior cómo se registran las transiciones de estado (`statistics.clickAttacks: 120 → 121`).
-7. **Export Diagnostics:** Haz clic en `💾 Export Diagnostics` para generar y descargar inmediatamente el archivo JSON local `pokeclicker-security-lab-diagnostics-<timestamp>.json`.
-8. **Pruebas Automatizadas:** Ejecuta en la terminal local:
-   ```bash
-   npm test
-   ```
-
----
-
-## 4. Ejemplo de Diagnóstico JSON Exportado
-
-```json
-{
-  "appName": "PokéClicker Security Lab",
-  "phase": 1,
-  "timestamp": "2026-09-06T04:00:00.000Z",
-  "gameDetected": true,
-  "gameVersion": "0.10.14",
-  "versionSource": "App.game.version",
-  "failSafe": null,
-  "fingerprint": {
-    "totalProbed": 22,
-    "existingCount": 18,
-    "existingPaths": [
-      "App",
-      "App.game",
-      "App.game.badgeCase",
-      "App.game.breeding",
-      "App.game.challenges",
-      "App.game.farming",
-      "App.game.oakItems",
-      "App.game.party",
-      "App.game.player",
-      "App.game.quests",
-      "App.game.shards",
-      "App.game.statistics",
-      "App.game.underground",
-      "App.game.wallet",
-      "Battle",
-      "Battle.enemyPokemon",
-      "GameConstants",
-      "ko"
-    ],
-    "signatureHash": "SIG-82FA4B1",
-    "timestamp": "2026-09-06T04:00:00.000Z"
-  },
-  "snapshot": {
-    "timestamp": "2026-09-06T04:00:00.000Z",
-    "version": "0.10.14",
-    "wallet": {
-      "Money": 14520,
-      "QuestPoint": 120,
-      "DungeonToken": 450,
-      "Diamond": 12,
-      "FarmPoint": 0,
-      "BattlePoint": 0
-    },
-    "statistics": {
-      "clickAttacks": 1293,
-      "totalPokemonCaptured": 312,
-      "totalShinyPokemonCaptured": 4,
-      "totalPokemonDefeated": 450
-    },
-    "battle": {
-      "name": "Pidgey",
-      "health": 120,
-      "maxHealth": 120
-    }
-  },
-  "candidates": {
-    "totalDiscovered": 42,
-    "economy": [
-      {
-        "candidate": "App.game.wallet.gainMoney",
-        "name": "gainMoney",
-        "type": "function",
-        "length": 2,
-        "domain": "Economy",
-        "reason": "Matches keyword(s): [money, gain]"
-      },
-      {
-        "candidate": "App.game.wallet.gainQuestPoints",
-        "name": "gainQuestPoints",
-        "type": "function",
-        "length": 2,
-        "domain": "Economy",
-        "reason": "Matches keyword(s): [quest, questpoints, points, gain]"
-      },
-      {
-        "candidate": "App.game.wallet.hasAmount",
-        "name": "hasAmount",
-        "type": "function",
-        "length": 1,
-        "domain": "Economy",
-        "reason": "Matches keyword(s): [wallet]"
-      }
-    ],
-    "shiny": [
-      {
-        "candidate": "PokemonFactory.generateShiny",
-        "name": "generateShiny",
-        "type": "function",
-        "length": 2,
-        "domain": "Shiny",
-        "reason": "Matches keyword(s): [shiny, pokemon]"
-      },
-      {
-        "candidate": "App.game.party.calculateShinyChance",
-        "name": "calculateShinyChance",
-        "type": "function",
-        "length": 1,
-        "domain": "Shiny",
-        "reason": "Matches keyword(s): [shiny, chance]"
-      }
-    ],
-    "quests": [
-      {
-        "candidate": "App.game.quests.claimReward",
-        "name": "claimReward",
-        "type": "function",
-        "length": 1,
-        "domain": "Quests",
-        "reason": "Matches keyword(s): [quest, quests, reward, claim]"
-      },
-      {
-        "candidate": "App.game.quests.getQuestLine",
-        "name": "getQuestLine",
-        "type": "function",
-        "length": 1,
-        "domain": "Quests",
-        "reason": "Matches keyword(s): [quest, quests]"
-      }
-    ],
-    "battle": [
-      {
-        "candidate": "Battle.clickAttack",
-        "name": "clickAttack",
-        "type": "function",
-        "length": 0,
-        "domain": "Battle",
-        "reason": "Matches keyword(s): [battle, clickattack, attack]"
-      },
-      {
-        "candidate": "Battle.pokemonAttack",
-        "name": "pokemonAttack",
-        "type": "function",
-        "length": 0,
-        "domain": "Battle",
-        "reason": "Matches keyword(s): [battle, attack, pokemonattack]"
-      }
-    ]
-  },
-  "modules": [
-    {
-      "id": "diagnostics",
-      "name": "Runtime Diagnostics",
-      "phase": 1,
-      "locked": false,
-      "enabled": true,
-      "status": "ACTIVE"
-    },
-    {
-      "id": "runtime-inspector",
-      "name": "Runtime Inspector",
-      "phase": 1,
-      "locked": false,
-      "enabled": true,
-      "status": "ACTIVE"
-    },
-    {
-      "id": "economy-research",
-      "name": "Economy Research Lab",
-      "phase": 2,
-      "locked": true,
-      "enabled": false,
-      "status": "LOCKED — Phase 2"
-    },
-    {
-      "id": "shiny-research",
-      "name": "Shiny Research Lab",
-      "phase": 2,
-      "locked": true,
-      "enabled": false,
-      "status": "LOCKED — Phase 2"
-    },
-    {
-      "id": "quest-research",
-      "name": "Quest Research Lab",
-      "phase": 2,
-      "locked": true,
-      "enabled": false,
-      "status": "LOCKED — Phase 2"
-    },
-    {
-      "id": "battle-research",
-      "name": "Battle & Combat Research Lab",
-      "phase": 2,
-      "locked": true,
-      "enabled": false,
-      "status": "LOCKED — Phase 2"
-    }
-  ]
-}
+```bash
+npm test
 ```
 
 ---
 
-## 5. Matriz de Rutas y Candidatos Detectados
+## ❓ Preguntas Frecuentes
 
-| Dominio | Objeto / Ruta Raíz | Observables & Métodos Clave | Propósito Identificado |
-| :--- | :--- | :--- | :--- |
-| **Núcleo** | `App.game` | `version`, `update`, `initialize` | Orquestador central del juego |
-| **Economía** | `App.game.wallet` | `currencies[]`, `gainMoney(amt, notify)`, `gainQuestPoints(amt, notify)`, `hasAmount(cost)` | Gestión reactiva de divisas vía observables |
-| **Estadísticas** | `App.game.statistics` | `clickAttacks`, `totalPokemonCaptured`, `totalShinyPokemonCaptured`, `totalPokemonDefeated` | Contadores de auditoría y progreso global |
-| **Misiones** | `App.game.quests` | `questList[]`, `claimReward(index)`, `questLines[]` | Registro y validación de misiones y recompensas QP |
-| **Combate** | `Battle` | `clickAttack()`, `pokemonAttack()`, `enemyPokemon` | Bucle de daño directo y ataques pasivos de Pokémon |
-| **Encuentros / Shiny** | `PokemonFactory`, `App.game.party` | `generateShiny(...)`, `calculateShinyChance(...)` | Lógica de generación RNG de encuentros salvajes |
-| **Jugador** | `App.game.player` | `region`, `route`, `starter` | Posicionamiento y estado de aventura |
+<details>
+<summary><b>¿Puede dañar o corromper mi partida guardada?</b></summary>
+<p>No. A diferencia de scripts arbitrarios que sobreescriben variables globales indiscriminadamente, esta extensión cuenta con verificación de deltas atómicos y no modifica la función <code>App.game.save()</code> ni altera las estructuras internas de guardado local.</p>
+</details>
 
----
+<details>
+<summary><b>¿Funciona si minimizo la ventana del navegador?</b></summary>
+<p>Sí. El motor opera desacoplado del puntero del ratón y de eventos de pantalla, interactuando directamente en el ciclo de ejecución del juego.</p>
+</details>
 
-## 6. Manejo de Incompatibilidades y Fail-Safe
-
-* **Aislamiento Knockout.js:** PokéClicker utiliza Knockout.js para su capa reactiva. Las propiedades no se acceden como valores planos si son observables; se desenrollan de forma segura llamando a `.peek()` sin registrar suscripciones ni causar re-renders innecesarios.
-* **Getters Protegidos:** El motor comprueba los descriptores de propiedad (`Object.getOwnPropertyDescriptor`) para evitar la ejecución involuntaria de getters que lancen errores o muten el DOM.
-* **Referencias Circulares y Profundidad:** Límite configurable por defecto de profundidad (`depth = 3`) y control con `WeakSet` para prevenir desbordamiento de pila.
-* **Detección de Carga Tardía:** Si la extensión se ejecuta antes de que los bundles de PokéClicker finalicen su inicialización, se activa el bloque de diagnóstico de contingencia indicando las causas posibles sin romper la ejecución de la página.
+<details>
+<summary><b>¿Cómo puedo ocultar el panel flotante mientras juego?</b></summary>
+<p>Puedes pulsar el botón <code>−</code> en la esquina superior derecha de la cabecera del panel para colapsarlo a un tamaño compacto o arrastrarlo a cualquier esquina de la pantalla.</p>
+</details>
 
 ---
 
-## 7. Propuesta Concreta para Fase 2 (Basada Exclusivamente en la Evidencia)
+## 🛡️ Descargo de Responsabilidad (Disclaimer)
 
-Habiendo identificado de forma concluyente la arquitectura en tiempo de ejecución (TypeScript + Knockout Observables encapsulados en `App.game`), la **Fase 2** deberá abordar:
+Este proyecto ha sido desarrollado con fines **educativos, de análisis técnico y de investigación** sobre la arquitectura reactiva de aplicaciones basadas en TypeScript y Knockout.js. Todos los derechos sobre Pokémon y PokéClicker pertenecen a sus respectivos creadores y titulares de derechos de autor. Utiliza la extensión de forma responsable.
 
-1. **Activación de Módulos de Investigación:**
-   * Desbloquear `economy-research`, `shiny-research`, `quest-research` y `battle-research` en el `ModuleRegistry`.
-2. **Telemetría de Argumentos vía `Instrumentation`:**
-   * Utilizar la infraestructura de `core/instrumentation.js` para registrar en tiempo real los argumentos que el juego pasa a `App.game.wallet.gainMoney` y `Battle.clickAttack`.
-3. **Análisis de Probabilidad RNG:**
-   * Monitorear los parámetros de entrada y multiplicadores que alimentan a `PokemonFactory.generateShiny` para documentar la fórmula real de probabilidad shiny en la versión cargada.
-4. **Validación de Integridad de Guardado:**
-   * Estudiar cómo `App.game.save()` serializa el estado a `localStorage` para entender los mecanismos de checksum y validación de progreso.
+---
+
+## 📄 Licencia
+
+Este proyecto está bajo la Licencia **MIT**. Consulta el archivo [LICENSE](LICENSE) para más detalles.
+
+<div align="center">
+
+Hecho con ⚡ para la comunidad de **PokéClicker** en [GitHub](https://github.com/WilEgRo/pokeclicker-autoclick-dobleCoins).
+
+</div>
