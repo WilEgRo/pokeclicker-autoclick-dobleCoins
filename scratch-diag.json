@@ -1,0 +1,286 @@
+{
+  "appName": "PokéClicker Security Lab",
+  "phase": 1,
+  "timestamp": "2026-09-06T05:33:08.800Z",
+  "gameDetected": false,
+  "gameVersion": "unknown",
+  "versionSource": null,
+  "failSafe": {
+    "detected": false,
+    "message": "PokéClicker runtime not detected or partially initialized.",
+    "possibleCauses": [
+      "The game page is still downloading assets or initializing knockout bindings.",
+      "The extension executed before scripts loaded.",
+      "The game architecture/namespace has changed significantly.",
+      "Active tab is not an authentic PokéClicker instance."
+    ]
+  },
+  "fingerprint": {
+    "totalProbed": 24,
+    "existingCount": 6,
+    "existingPaths": [
+      "Battle",
+      "Battle.enemyPokemon",
+      "GameConstants",
+      "KeyItemController",
+      "Notifier",
+      "ko"
+    ],
+    "signatureHash": "SIG-21B047F2",
+    "timestamp": "2026-09-06T05:33:08.800Z"
+  },
+  "probedPaths": {
+    "App": {
+      "path": "App",
+      "exists": false,
+      "type": "undefined",
+      "constructor": null,
+      "preview": "Path not found"
+    },
+    "App.game": {
+      "path": "App.game",
+      "exists": false,
+      "type": "undefined",
+      "constructor": null,
+      "preview": "Path not found"
+    },
+    "App.game.wallet": {
+      "path": "App.game.wallet",
+      "exists": false,
+      "type": "undefined",
+      "constructor": null,
+      "preview": "Path not found"
+    },
+    "App.game.statistics": {
+      "path": "App.game.statistics",
+      "exists": false,
+      "type": "undefined",
+      "constructor": null,
+      "preview": "Path not found"
+    },
+    "App.game.quests": {
+      "path": "App.game.quests",
+      "exists": false,
+      "type": "undefined",
+      "constructor": null,
+      "preview": "Path not found"
+    },
+    "App.game.player": {
+      "path": "App.game.player",
+      "exists": false,
+      "type": "undefined",
+      "constructor": null,
+      "preview": "Path not found"
+    },
+    "App.game.party": {
+      "path": "App.game.party",
+      "exists": false,
+      "type": "undefined",
+      "constructor": null,
+      "preview": "Path not found"
+    },
+    "App.game.breeding": {
+      "path": "App.game.breeding",
+      "exists": false,
+      "type": "undefined",
+      "constructor": null,
+      "preview": "Path not found"
+    },
+    "App.game.underground": {
+      "path": "App.game.underground",
+      "exists": false,
+      "type": "undefined",
+      "constructor": null,
+      "preview": "Path not found"
+    },
+    "App.game.farming": {
+      "path": "App.game.farming",
+      "exists": false,
+      "type": "undefined",
+      "constructor": null,
+      "preview": "Path not found"
+    },
+    "App.game.oakItems": {
+      "path": "App.game.oakItems",
+      "exists": false,
+      "type": "undefined",
+      "constructor": null,
+      "preview": "Path not found"
+    },
+    "App.game.badgeCase": {
+      "path": "App.game.badgeCase",
+      "exists": false,
+      "type": "undefined",
+      "constructor": null,
+      "preview": "Path not found"
+    },
+    "App.game.shards": {
+      "path": "App.game.shards",
+      "exists": false,
+      "type": "undefined",
+      "constructor": null,
+      "preview": "Path not found"
+    },
+    "App.game.challenges": {
+      "path": "App.game.challenges",
+      "exists": false,
+      "type": "undefined",
+      "constructor": null,
+      "preview": "Path not found"
+    },
+    "Battle": {
+      "path": "Battle",
+      "exists": true,
+      "type": "function",
+      "isObservable": false,
+      "constructor": "Function",
+      "preview": "[Function: Battle (0 args)]"
+    },
+    "Battle.enemyPokemon": {
+      "path": "Battle.enemyPokemon",
+      "exists": true,
+      "type": "object",
+      "isObservable": true,
+      "constructor": "BattlePokemon",
+      "preview": "[BattlePokemon]"
+    },
+    "player": {
+      "path": "player",
+      "exists": false,
+      "type": "undefined",
+      "constructor": null,
+      "preview": "Path not found"
+    },
+    "ko": {
+      "path": "ko",
+      "exists": true,
+      "type": "object",
+      "isObservable": false,
+      "constructor": "Object",
+      "preview": "[Object]"
+    },
+    "GameConstants": {
+      "path": "GameConstants",
+      "exists": true,
+      "type": "object",
+      "isObservable": false,
+      "constructor": "Object",
+      "preview": "[Object]"
+    },
+    "PokemonFactory": {
+      "path": "PokemonFactory",
+      "exists": false,
+      "type": "undefined",
+      "constructor": null,
+      "preview": "Path not found"
+    },
+    "RouteHelper": {
+      "path": "RouteHelper",
+      "exists": false,
+      "type": "undefined",
+      "constructor": null,
+      "preview": "Path not found"
+    },
+    "MapHelper": {
+      "path": "MapHelper",
+      "exists": false,
+      "type": "undefined",
+      "constructor": null,
+      "preview": "Path not found"
+    },
+    "Notifier": {
+      "path": "Notifier",
+      "exists": true,
+      "type": "function",
+      "isObservable": false,
+      "constructor": "Function",
+      "preview": "[Function: Notifier (0 args)]"
+    },
+    "KeyItemController": {
+      "path": "KeyItemController",
+      "exists": true,
+      "type": "function",
+      "isObservable": false,
+      "constructor": "Function",
+      "preview": "[Function: KeyItemController (0 args)]"
+    }
+  },
+  "snapshot": {
+    "timestamp": "2026-09-06T05:33:08.800Z",
+    "version": "unknown",
+    "wallet": {},
+    "statistics": {},
+    "battle": {
+      "name": "Weepinbell",
+      "health": 38671,
+      "maxHealth": 38671
+    }
+  },
+  "candidates": {
+    "totalDiscovered": 0,
+    "economy": [],
+    "shiny": [],
+    "quests": [],
+    "battle": []
+  },
+  "modules": [
+    {
+      "id": "diagnostics",
+      "name": "Runtime Diagnostics",
+      "description": "Discovers runtime status, game structure, and exports local JSON diagnostics.",
+      "phase": 1,
+      "locked": false,
+      "enabled": true,
+      "status": "ACTIVE"
+    },
+    {
+      "id": "runtime-inspector",
+      "name": "Runtime Inspector",
+      "description": "Safely inspects live paths, objects, observables, and function signatures.",
+      "phase": 1,
+      "locked": false,
+      "enabled": true,
+      "status": "ACTIVE"
+    },
+    {
+      "id": "economy-research",
+      "name": "Economy Research Lab",
+      "description": "Candidate analysis for currencies, shops, mining rewards, and farm points.",
+      "phase": 2,
+      "locked": true,
+      "enabled": false,
+      "status": "LOCKED — Phase 2"
+    },
+    {
+      "id": "shiny-research",
+      "name": "Shiny Research Lab",
+      "description": "Candidate analysis for encounter generation and shiny probability algorithms.",
+      "phase": 2,
+      "locked": true,
+      "enabled": false,
+      "status": "LOCKED — Phase 2"
+    },
+    {
+      "id": "quest-research",
+      "name": "Quest Research Lab",
+      "description": "Candidate analysis for quest tracking, quest line progression, and QP rewards.",
+      "phase": 2,
+      "locked": true,
+      "enabled": false,
+      "status": "LOCKED — Phase 2"
+    },
+    {
+      "id": "battle-research",
+      "name": "Battle & Combat Research Lab",
+      "description": "Candidate analysis for attack loop timing, gym battles, and click damages.",
+      "phase": 2,
+      "locked": true,
+      "enabled": false,
+      "status": "LOCKED — Phase 2"
+    }
+  ],
+  "environment": {
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36 OPR/135.0.0.0",
+    "location": "https://www.pokeclicker.com/"
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "manifest_version": 3,
+  "name": "PokéClicker Security Lab",
+  "version": "1.0.0",
+  "description": "Educational runtime inspector, research console and auto-clicker for PokéClicker client analysis.",
+  "permissions": [],
+  "host_permissions": [
+    "https://www.pokeclicker.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.pokeclicker.com/*"
+      ],
+      "js": [
+        "core/message-bridge.js",
+        "ui/panel.js",
+        "content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "engine.js",
+        "bridge.js",
+        "core/object-inspector.js",
+        "core/function-inspector.js",
+        "core/diff-engine.js",
+        "core/instrumentation.js",
+        "core/module-registry.js",
+        "core/runtime-detector.js",
+        "core/message-bridge.js",
+        "core/battle-state-machine.js",
+        "modules/diagnostics/runtime-diagnostics.js",
+        "modules/diagnostics/battle-lifecycle-diagnostics.js",
+        "modules/rewards/reward-economy-lab.js",
+        "modules/rewards/battle-reward-modifier.js",
+        "page-bridge.js",
+        "ui/panel.html",
+        "ui/panel.css"
+      ],
+      "matches": [
+        "https://www.pokeclicker.com/*"
+      ]
+    }
+  ]
+}

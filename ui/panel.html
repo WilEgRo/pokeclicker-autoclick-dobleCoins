@@ -1,0 +1,534 @@
+<div id="psl-panel" class="psl-root">
+  <!-- Header Bar -->
+  <div class="psl-header" id="psl-header-drag">
+    <div class="psl-title-group">
+      <span class="psl-logo-icon">🔬</span>
+      <div>
+        <h1 class="psl-title">POKÉCLICKER SECURITY LAB</h1>
+        <div class="psl-subtitle">Runtime Inspector & Research Console + Auto-Clicker</div>
+      </div>
+    </div>
+    <div class="psl-header-actions">
+      <span id="psl-status-pill" class="psl-pill psl-pill-warning">Connecting...</span>
+      <button id="psl-btn-minimize" class="psl-icon-btn" title="Minimize/Maximize">−</button>
+    </div>
+  </div>
+
+  <!-- Main Container -->
+  <div class="psl-body" id="psl-body">
+    <!-- Action Toolbar -->
+    <div class="psl-toolbar">
+      <button id="psl-btn-autoclick-quick" class="psl-btn psl-btn-warning">
+        <span class="psl-autoclick-dot"></span> Auto Click [OFF]
+      </button>
+      <button id="psl-btn-refresh" class="psl-btn psl-btn-primary">
+        <span class="psl-btn-icon">⟳</span> Refresh Runtime
+      </button>
+      <button id="psl-btn-record" class="psl-btn psl-btn-secondary">
+        <span class="psl-record-indicator"></span> Record Changes
+      </button>
+      <button id="psl-btn-export" class="psl-btn psl-btn-accent">
+        <span class="psl-btn-icon">💾</span> Export
+      </button>
+      <button id="psl-btn-clear-log" class="psl-btn psl-btn-ghost">
+        Clear Log
+      </button>
+    </div>
+
+    <!-- Tab Navigation -->
+    <div class="psl-tabs">
+      <button class="psl-tab active" data-tab="tab-autoclick">⚡ Auto Click</button>
+      <button class="psl-tab" data-tab="tab-rewards">💰 Rewards Lab</button>
+      <button class="psl-tab" data-tab="tab-overview">Overview</button>
+      <button class="psl-tab" data-tab="tab-state">Live State</button>
+      <button class="psl-tab" data-tab="tab-candidates">Candidates</button>
+      <button class="psl-tab" data-tab="tab-inspector">Inspector</button>
+      <button class="psl-tab" data-tab="tab-changes">Changes</button>
+      <button class="psl-tab" data-tab="tab-modules">Modules</button>
+    </div>
+
+    <!-- Tab Content -->
+    <div class="psl-tab-content">
+      <!-- TAB: AUTO CLICKER -->
+      <div id="tab-autoclick" class="psl-tab-pane active">
+        <div class="psl-card psl-autoclick-card">
+          <div class="psl-card-title">Control de Clic Automático</div>
+          
+          <div class="psl-autoclick-hero">
+            <button id="psl-btn-autoclick-main" class="psl-btn-hero psl-btn-hero-off">
+              <span class="psl-hero-icon">▶</span>
+              <span id="psl-hero-text">INICIAR AUTO CLICK</span>
+            </button>
+          </div>
+
+          <div class="psl-cps-control-row">
+            <label for="psl-cps-range" class="psl-cps-label">Velocidad (CPS):</label>
+            <input type="range" id="psl-cps-range" min="1" max="30" value="30" class="psl-slider" />
+            <input type="number" id="psl-cps-input" min="1" max="30" value="30" class="psl-input-number" />
+            <span class="psl-cps-unit">clicks/seg</span>
+          </div>
+
+          <div class="psl-grid-3" style="margin-top: 12px;">
+            <div class="psl-stat-box">
+              <span class="psl-stat-label">Estado</span>
+              <span class="psl-stat-val" id="ac-status-text">INACTIVO</span>
+            </div>
+            <div class="psl-stat-box">
+              <span class="psl-stat-label">Clics Sesión</span>
+              <span class="psl-stat-val" id="ac-attempts-count">0</span>
+            </div>
+            <div class="psl-stat-box">
+              <span class="psl-stat-label">Batalla Activa</span>
+              <span class="psl-stat-val" id="ac-battle-mode">Battle</span>
+            </div>
+          </div>
+
+          <!-- Battle Machine State & Diagnostics -->
+          <div class="psl-grid-3" style="margin-top: 8px;">
+            <div class="psl-stat-box">
+              <span class="psl-stat-label">Máquina de Estados</span>
+              <span class="psl-stat-val psl-state-badge" id="ac-machine-state">IDLE</span>
+            </div>
+            <div class="psl-stat-box">
+              <span class="psl-stat-label">Tipo Batalla</span>
+              <span class="psl-stat-val" id="ac-battle-type">WILD</span>
+            </div>
+            <div class="psl-stat-box">
+              <span class="psl-stat-label">Transiciones</span>
+              <span class="psl-stat-val psl-mono" id="ac-transitions-count">0</span>
+            </div>
+          </div>
+
+          <div class="psl-grid-2" style="margin-top: 8px;">
+            <div class="psl-kv-item"><span class="psl-k">Daño de Clic:</span><span class="psl-v psl-mono" id="ac-damage-val">-</span></div>
+            <div class="psl-kv-item"><span class="psl-k">Total Clics (Game):</span><span class="psl-v psl-mono" id="ac-game-clicks">-</span></div>
+            <div class="psl-kv-item"><span class="psl-k">Objetivo Actual:</span><span class="psl-v" id="ac-target-enemy">-</span></div>
+            <div class="psl-kv-item"><span class="psl-k">Vida Enemiga:</span><span class="psl-v psl-mono" id="ac-target-hp">-</span></div>
+            <div class="psl-kv-item"><span class="psl-k">Latencia Media KO:</span><span class="psl-v psl-mono" id="ac-avg-latency">- ms</span></div>
+            <div class="psl-kv-item"><span class="psl-k">Latencia Máxima:</span><span class="psl-v psl-mono" id="ac-max-latency">- ms</span></div>
+          </div>
+
+          <div style="margin-top: 10px; display: flex; justify-content: space-between; align-items: center;">
+            <div style="display: flex; gap: 8px; align-items: center;">
+              <label style="font-size: 10px; color: #94a3b8; display: flex; align-items: center; gap: 4px; cursor: pointer;">
+                <input type="checkbox" id="ac-chk-pause-ko" /> Pausa post-KO
+              </label>
+              <select id="ac-sel-delay" class="psl-select" style="font-size: 9px; padding: 2px 4px; background: #0f172a; color: #94a3b8; border: 1px solid rgba(255,255,255,0.1); border-radius: 4px;">
+                <option value="0">0 ms</option>
+                <option value="100">100 ms</option>
+                <option value="250">250 ms</option>
+                <option value="500">500 ms</option>
+                <option value="1000">1000 ms</option>
+              </select>
+            </div>
+            <button id="psl-btn-reset-ac-stats" class="psl-btn psl-btn-ghost" style="font-size: 10px;">
+              Resetear Contador
+            </button>
+          </div>
+        </div>
+
+        <!-- Battle Lifecycle Trace Card -->
+        <div class="psl-card">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div class="psl-card-title" style="margin-bottom: 0;">Battle Lifecycle Trace</div>
+            <div style="display: flex; gap: 6px;">
+              <button id="psl-btn-clear-trace" class="psl-btn psl-btn-ghost" style="font-size: 9px; padding: 2px 6px;">Limpiar</button>
+              <button id="psl-btn-export-trace" class="psl-btn psl-btn-ghost" style="font-size: 9px; padding: 2px 6px;">Exportar</button>
+            </div>
+          </div>
+          <p class="psl-text-sm" style="margin: 4px 0 6px 0;">Línea de tiempo de eventos de combate, KO y transiciones entre enemigos:</p>
+          <div class="psl-table-wrapper" style="max-height: 140px; overflow-y: auto;">
+            <table class="psl-table" id="psl-trace-table" style="font-size: 9px;">
+              <thead>
+                <tr>
+                  <th style="width: 55px;">Seq</th>
+                  <th style="width: 70px;">Evento</th>
+                  <th>Detalle / Enemigo</th>
+                  <th style="width: 60px;">HP</th>
+                  <th style="width: 60px;">Hora</th>
+                </tr>
+              </thead>
+              <tbody id="psl-trace-tbody">
+                <tr><td colspan="5" class="psl-text-center psl-text-muted">Sin eventos registrados aún</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="psl-card">
+          <div class="psl-card-title">Compatibilidad Multi-Batalla Inteligente</div>
+          <p class="psl-text-sm">
+            El motor de clic se conecta directamente al contexto de combate activo sin depender del DOM:
+          </p>
+          <ul class="psl-list">
+            <li><strong>Rutas Salvajes:</strong> Invoca <code>Battle.clickAttack()</code></li>
+            <li><strong>Gimnasios:</strong> Detecta <code>GymBattle</code> y estado <code>GymRunner.running()</code></li>
+            <li><strong>Mazmorras:</strong> Detecta <code>DungeonBattle</code> y estado <code>DungeonRunner.running()</code></li>
+            <li><strong>Batallas Especiales:</strong> Soporta <code>BattleFrontierBattle</code> y <code>TemporaryBattleBattle</code></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- TAB: REWARDS LAB (FASE 3) -->
+      <div id="tab-rewards" class="psl-tab-pane">
+        <div class="psl-card">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div class="psl-card-title" style="margin-bottom: 0;">Reward & Economy Lab</div>
+            <span class="psl-pill psl-pill-success" id="rwd-lab-status">ACTIVE (READ-ONLY)</span>
+          </div>
+          <p class="psl-text-sm" style="margin: 4px 0 10px 0;">
+            Monitoreo observacional de mutaciones económicas, correlación causal de combates y análisis de fuentes de recompensa sin alteración del juego.
+          </p>
+
+          <!-- Current Economy Display -->
+          <div class="psl-card-title" style="font-size: 11px; margin-bottom: 6px;">Economía en Vivo (Wallet)</div>
+          <div class="psl-grid-3" id="rwd-wallet-grid">
+            <div class="psl-stat-box"><span class="psl-stat-label">Money</span><span class="psl-stat-val psl-mono" id="rwd-val-money">-</span></div>
+            <div class="psl-stat-box"><span class="psl-stat-label">Quest Points</span><span class="psl-stat-val psl-mono" id="rwd-val-qp">-</span></div>
+            <div class="psl-stat-box"><span class="psl-stat-label">Dungeon Tokens</span><span class="psl-stat-val psl-mono" id="rwd-val-dt">-</span></div>
+            <div class="psl-stat-box"><span class="psl-stat-label">Diamonds</span><span class="psl-stat-val psl-mono" id="rwd-val-diamonds">-</span></div>
+            <div class="psl-stat-box"><span class="psl-stat-label">Farm Points</span><span class="psl-stat-val psl-mono" id="rwd-val-farm">-</span></div>
+            <div class="psl-stat-box"><span class="psl-stat-label">Battle Points</span><span class="psl-stat-val psl-mono" id="rwd-val-bp">-</span></div>
+          </div>
+        </div>
+
+        <!-- CONTROLLED BATTLE REWARD MODIFIER (FASE 3.1) -->
+        <div class="psl-card psl-card-modifier">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <div class="psl-card-title" style="margin-bottom: 0;">⚡ Battle Reward Modifier</div>
+            <span class="psl-pill psl-pill-muted" id="mod-banner-status">○ ORIGINAL GAME BEHAVIOR</span>
+          </div>
+          <p class="psl-text-sm" style="margin: 2px 0 10px 0;">
+            Multiplicador controlado exclusivo para recompensas de derrota en combates salvajes. Aislamiento total sobre misiones, mazmorras y tiendas.
+          </p>
+
+          <!-- Runtime & Hook Health Line -->
+          <div style="display: flex; gap: 8px; font-size: 10px; margin-bottom: 8px; flex-wrap: wrap; background: rgba(0,0,0,0.2); padding: 5px 8px; border-radius: 6px;">
+            <div><span class="psl-k">Runtime:</span> <span id="mod-health-runtime" class="psl-pill psl-pill-warning" style="font-size: 9px; padding: 1px 5px;">DISCOVERING</span></div>
+            <div><span class="psl-k">Bridge:</span> <span id="mod-health-bridge" class="psl-pill psl-pill-success" style="font-size: 9px; padding: 1px 5px;">CONNECTED</span></div>
+            <div><span class="psl-k">Reward Hook:</span> <span id="mod-health-hooks" class="psl-pill psl-pill-warning" style="font-size: 9px; padding: 1px 5px;">VERIFYING</span></div>
+            <div><span class="psl-k">Context:</span> <span id="mod-health-context" class="psl-pill psl-pill-info" style="font-size: 9px; padding: 1px 5px;">WILD</span></div>
+          </div>
+
+          <!-- Mode Controls -->
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; gap: 8px;">
+            <div style="display: flex; gap: 4px;" id="mod-mode-buttons">
+              <button class="psl-btn psl-btn-ghost active" id="mod-btn-off" data-mod-mode="OFF">OFF</button>
+              <button class="psl-btn psl-btn-ghost" id="mod-btn-sim" data-mod-mode="SIMULATION">SIMULATION</button>
+              <button class="psl-btn psl-btn-ghost" id="mod-btn-active" data-mod-mode="ACTIVE">ACTIVE</button>
+            </div>
+            <button id="mod-btn-reset" class="psl-btn psl-btn-ghost psl-btn-reset" title="Restablecer a 1x y modo OFF">↺ Reset 1x</button>
+          </div>
+
+          <!-- Currency Targets Selector -->
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; background: rgba(0,0,0,0.2); padding: 5px 10px; border-radius: 6px;">
+            <span class="psl-k" style="font-size: 11px;">Monedas Objetivo:</span>
+            <div style="display: flex; gap: 6px;" id="mod-currency-chips">
+              <button class="psl-chip psl-chip-currency active" id="mod-curr-money" data-curr="money" title="Wild Battle Money">💵 Money</button>
+              <button class="psl-chip psl-chip-currency" id="mod-curr-dt" data-curr="dungeonToken" title="Dungeon Tokens (Wild Catch / Gain)">🪙 Dungeon Tokens</button>
+              <button class="psl-chip psl-chip-currency" id="mod-curr-qp" data-curr="questPoint" title="Quest Points (Quests)">📜 Quest Points</button>
+            </div>
+          </div>
+
+          <!-- Multiplier Stepper & Presets -->
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; background: rgba(0,0,0,0.25); padding: 6px 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <span class="psl-k" style="font-size: 11px;">Multiplicador:</span>
+              <button id="mod-btn-dec" class="psl-btn psl-btn-ghost" style="padding: 2px 8px; font-weight: bold;">-</button>
+              <input type="number" id="mod-input-mult" min="1" max="100" step="1" value="1" class="psl-input psl-mono" style="width: 55px; text-align: center; padding: 2px 4px;" />
+              <button id="mod-btn-inc" class="psl-btn psl-btn-ghost" style="padding: 2px 8px; font-weight: bold;">+</button>
+            </div>
+            <div style="display: flex; gap: 4px;" id="mod-quick-chips">
+              <button class="psl-chip active" data-mod-val="1">1x</button>
+              <button class="psl-chip" data-mod-val="2">2x</button>
+              <button class="psl-chip" data-mod-val="5">5x</button>
+              <button class="psl-chip" data-mod-val="10">10x</button>
+              <button class="psl-chip" data-mod-val="25">25x</button>
+              <button class="psl-chip" data-mod-val="100">100x</button>
+            </div>
+          </div>
+
+          <!-- Modifier Verification & Readouts -->
+          <div class="psl-grid-2" style="background: rgba(15,23,42,0.6); padding: 8px; border-radius: 6px;">
+            <div class="psl-kv-item"><span class="psl-k">Contexto Permitido:</span><span class="psl-v psl-pill psl-pill-info" style="font-size: 9px; padding: 1px 6px;">WILD</span></div>
+            <div class="psl-kv-item"><span class="psl-k">Verificación Aplicación:</span><span class="psl-v" id="mod-last-verify" style="font-weight: 700; color: #94a3b8;">○ STANDBY</span></div>
+            <div class="psl-kv-item"><span class="psl-k">Recompensa Original:</span><span class="psl-v psl-mono" id="mod-readout-orig">0</span></div>
+            <div class="psl-kv-item"><span class="psl-k">Recompensa Efectiva:</span><span class="psl-v psl-mono" id="mod-readout-eff" style="color: #38bdf8; font-weight: bold;">0</span></div>
+            <div class="psl-kv-item"><span class="psl-k">Último Delta Aplicado:</span><span class="psl-v psl-mono" id="mod-readout-applied" style="color: #4ade80; font-weight: bold;">0</span></div>
+            <div class="psl-kv-item"><span class="psl-k">KOs Modificados / Sim:</span><span class="psl-v psl-mono" id="mod-readout-counts">0 / 0</span></div>
+          </div>
+        </div>
+
+        <!-- Last Correlated Reward Card -->
+        <div class="psl-card">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div class="psl-card-title" style="margin-bottom: 0;">Última Recompensa Correlacionada</div>
+            <span class="psl-badge" id="rwd-last-confidence">NO DATA</span>
+          </div>
+          <div class="psl-grid-2" style="margin-top: 8px;">
+            <div class="psl-kv-item"><span class="psl-k">Batalla / Contexto:</span><span class="psl-v" id="rwd-last-battle">-</span></div>
+            <div class="psl-kv-item"><span class="psl-k">Delta Recompensa:</span><span class="psl-v psl-mono" id="rwd-last-delta" style="color: #4ade80; font-weight: 700;">-</span></div>
+            <div class="psl-kv-item"><span class="psl-k">Método Público:</span><span class="psl-v psl-mono" id="rwd-last-method">-</span></div>
+            <div class="psl-kv-item"><span class="psl-k">Método Interno:</span><span class="psl-v psl-mono" id="rwd-last-internal">-</span></div>
+            <div class="psl-kv-item"><span class="psl-k">Argumentos:</span><span class="psl-v psl-mono" id="rwd-last-args">-</span></div>
+            <div class="psl-kv-item"><span class="psl-k">Fuente / Transición:</span><span class="psl-v" id="rwd-last-source">-</span></div>
+          </div>
+        </div>
+
+        <!-- Session Statistics -->
+        <div class="psl-card">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div class="psl-card-title" style="margin-bottom: 0;">Sesión de Análisis de Recompensas</div>
+            <button id="psl-btn-reset-rwd-session" class="psl-btn psl-btn-ghost" style="font-size: 9px; padding: 2px 6px;">Resetear Sesión</button>
+          </div>
+          <div class="psl-grid-3" style="margin-top: 8px;">
+            <div class="psl-stat-box"><span class="psl-stat-label">Combates Obs.</span><span class="psl-stat-val psl-mono" id="rwd-sess-battles">0</span></div>
+            <div class="psl-stat-box"><span class="psl-stat-label">KOs Registrados</span><span class="psl-stat-val psl-mono" id="rwd-sess-kos">0</span></div>
+            <div class="psl-stat-box"><span class="psl-stat-label">Eventos Reward</span><span class="psl-stat-val psl-mono" id="rwd-sess-events">0</span></div>
+          </div>
+          <div class="psl-grid-2" style="margin-top: 8px;">
+            <div class="psl-kv-item"><span class="psl-k">Money Ganado:</span><span class="psl-v psl-mono" id="rwd-sess-money" style="color: #4ade80;">+0</span></div>
+            <div class="psl-kv-item"><span class="psl-k">Quest Points:</span><span class="psl-v psl-mono" id="rwd-sess-qp">+0</span></div>
+            <div class="psl-kv-item"><span class="psl-k">Dungeon Tokens:</span><span class="psl-v psl-mono" id="rwd-sess-dt">+0</span></div>
+            <div class="psl-kv-item"><span class="psl-k">Rewards Desconocidos:</span><span class="psl-v psl-mono" id="rwd-sess-unknown">0</span></div>
+          </div>
+        </div>
+
+        <!-- Reward & Economy Trace Card -->
+        <div class="psl-card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <div class="psl-card-title" style="margin-bottom: 0;">Reward Trace</div>
+            <div style="display: flex; gap: 4px;">
+              <button id="psl-btn-clear-rwd-trace" class="psl-btn psl-btn-ghost" style="font-size: 9px; padding: 2px 6px;">Limpiar</button>
+              <button id="psl-btn-export-rwd-data" class="psl-btn psl-btn-ghost" style="font-size: 9px; padding: 2px 6px;">Exportar JSON</button>
+            </div>
+          </div>
+
+          <!-- Trace Filters -->
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <div style="display: flex; gap: 4px;" id="rwd-trace-filters">
+              <button class="psl-btn psl-btn-ghost active" data-rwd-filter="ALL" style="font-size: 8px; padding: 2px 5px;">All</button>
+              <button class="psl-btn psl-btn-ghost" data-rwd-filter="BATTLE" style="font-size: 8px; padding: 2px 5px;">Battle</button>
+              <button class="psl-btn psl-btn-ghost" data-rwd-filter="ECONOMY" style="font-size: 8px; padding: 2px 5px;">Economy</button>
+              <button class="psl-btn psl-btn-ghost" data-rwd-filter="QUEST" style="font-size: 8px; padding: 2px 5px;">Quest</button>
+              <button class="psl-btn psl-btn-ghost" data-rwd-filter="UNKNOWN" style="font-size: 8px; padding: 2px 5px;">Unknown</button>
+            </div>
+            <label style="font-size: 9px; color: #94a3b8; display: flex; align-items: center; gap: 4px;">
+              <input type="checkbox" id="rwd-chk-callstack" /> Call stacks
+            </label>
+          </div>
+
+          <div class="psl-table-wrapper" style="max-height: 150px; overflow-y: auto;">
+            <table class="psl-table" id="psl-rwd-trace-table" style="font-size: 9px;">
+              <thead>
+                <tr>
+                  <th style="width: 45px;">Seq</th>
+                  <th style="width: 80px;">Evento</th>
+                  <th>Detalle / Método / Recompensa</th>
+                  <th style="width: 60px;">Delta</th>
+                  <th style="width: 55px;">Hora</th>
+                </tr>
+              </thead>
+              <tbody id="psl-rwd-trace-tbody">
+                <tr><td colspan="5" class="psl-text-center psl-text-muted">Sin eventos de recompensa registrados aún</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: OVERVIEW -->
+      <div id="tab-overview" class="psl-tab-pane">
+        <!-- Component Health & Hook Diagnostics Card -->
+        <div class="psl-card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <div class="psl-card-title" style="margin-bottom: 0;">Component Health & Hook Diagnostics</div>
+            <div style="display: flex; gap: 6px; align-items: center;">
+              <button id="psl-btn-audit-context" class="psl-btn psl-btn-ghost" style="font-size: 9px; padding: 2px 6px;">Audit Context</button>
+              <span class="psl-pill" id="ov-health-state">NOT_INITIALIZED</span>
+            </div>
+          </div>
+          <div class="psl-grid-4" style="margin-top: 8px;">
+            <div class="psl-stat-box">
+              <span class="psl-stat-label">Page Bridge</span>
+              <span class="psl-stat-val" id="ov-bridge-link" style="font-size: 11px;">DISCONNECTED</span>
+            </div>
+            <div class="psl-stat-box">
+              <span class="psl-stat-label">Service Worker</span>
+              <span class="psl-stat-val" id="ov-sw-status" style="font-size: 10px; color: #38bdf8;">DECOUPLED</span>
+            </div>
+            <div class="psl-stat-box">
+              <span class="psl-stat-label">Reward Hooks</span>
+              <span class="psl-stat-val psl-mono" id="ov-hooks-count">0/9</span>
+            </div>
+            <div class="psl-stat-box">
+              <span class="psl-stat-label">Modifier Hook</span>
+              <span class="psl-stat-val psl-mono" id="ov-mod-hook">0/1</span>
+            </div>
+          </div>
+          <div class="psl-grid-2" style="margin-top: 8px;">
+            <div class="psl-kv-item"><span class="psl-k">App.game:</span><span class="psl-v" id="ov-comp-game">WAITING</span></div>
+            <div class="psl-kv-item"><span class="psl-k">Wallet:</span><span class="psl-v" id="ov-comp-wallet">WAITING</span></div>
+            <div class="psl-kv-item"><span class="psl-k">Statistics:</span><span class="psl-v" id="ov-comp-stats">WAITING</span></div>
+            <div class="psl-kv-item"><span class="psl-k">Battle:</span><span class="psl-v" id="ov-comp-battle">WAITING</span></div>
+            <div class="psl-kv-item"><span class="psl-k">Worker State:</span><span class="psl-v" id="ov-sw-detail" style="color: #94a3b8;">MV3 (Independent)</span></div>
+            <div class="psl-kv-item"><span class="psl-k">RewardEconomyLab:</span><span class="psl-v" id="ov-status-rwdlab">WAITING</span></div>
+            <div class="psl-kv-item"><span class="psl-k">BattleRewardModifier:</span><span class="psl-v" id="ov-status-modifier">WAITING</span></div>
+          </div>
+        </div>
+
+        <div class="psl-card">
+          <div class="psl-card-title">Runtime Environment</div>
+          <div class="psl-grid-2" id="psl-overview-grid">
+            <div class="psl-kv-item"><span class="psl-k">Game Loaded:</span><span class="psl-v" id="ov-game-loaded">-</span></div>
+            <div class="psl-kv-item"><span class="psl-k">Game Version:</span><span class="psl-v" id="ov-game-version">unknown</span></div>
+            <div class="psl-kv-item"><span class="psl-k">Fingerprint:</span><span class="psl-v psl-mono" id="ov-fingerprint">-</span></div>
+            <div class="psl-kv-item"><span class="psl-k">Probed Paths:</span><span class="psl-v" id="ov-probed-count">0/0</span></div>
+          </div>
+        </div>
+
+        <div class="psl-card" id="psl-failsafe-card" style="display: none;">
+          <div class="psl-card-title psl-text-danger">⚠️ Fail-Safe Diagnostics</div>
+          <p id="psl-failsafe-msg" class="psl-text-sm"></p>
+          <ul id="psl-failsafe-causes" class="psl-list"></ul>
+        </div>
+
+        <div class="psl-card">
+          <div class="psl-card-title">Core Runtime Paths</div>
+          <div class="psl-table-wrapper">
+            <table class="psl-table" id="psl-paths-table">
+              <thead>
+                <tr>
+                  <th>Path</th>
+                  <th>Status</th>
+                  <th>Type</th>
+                  <th>Preview</th>
+                </tr>
+              </thead>
+              <tbody id="psl-paths-tbody">
+                <tr><td colspan="4" class="psl-text-center">Loading paths...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: LIVE STATE -->
+      <div id="tab-state" class="psl-tab-pane">
+        <div class="psl-card">
+          <div class="psl-card-title">Wallet & Currencies</div>
+          <div class="psl-grid-3" id="psl-wallet-grid">
+            <div class="psl-stat-box"><span class="psl-stat-label">Money</span><span class="psl-stat-val" id="stat-wallet-money">-</span></div>
+            <div class="psl-stat-box"><span class="psl-stat-label">Quest Points</span><span class="psl-stat-val" id="stat-wallet-qp">-</span></div>
+            <div class="psl-stat-box"><span class="psl-stat-label">Dungeon Tokens</span><span class="psl-stat-val" id="stat-wallet-dt">-</span></div>
+            <div class="psl-stat-box"><span class="psl-stat-label">Diamonds</span><span class="psl-stat-val" id="stat-wallet-diamonds">-</span></div>
+            <div class="psl-stat-box"><span class="psl-stat-label">Farm Points</span><span class="psl-stat-val" id="stat-wallet-farm">-</span></div>
+            <div class="psl-stat-box"><span class="psl-stat-label">Battle Points</span><span class="psl-stat-val" id="stat-wallet-battle">-</span></div>
+          </div>
+        </div>
+
+        <div class="psl-card">
+          <div class="psl-card-title">Observed Statistics</div>
+          <div class="psl-grid-2" id="psl-stats-grid">
+            <div class="psl-kv-item"><span class="psl-k">Click Attacks:</span><span class="psl-v psl-mono" id="stat-click-attacks">-</span></div>
+            <div class="psl-kv-item"><span class="psl-k">Pokémon Captured:</span><span class="psl-v psl-mono" id="stat-captured">-</span></div>
+            <div class="psl-kv-item"><span class="psl-k">Shiny Captured:</span><span class="psl-v psl-mono" id="stat-shiny-captured">-</span></div>
+            <div class="psl-kv-item"><span class="psl-k">Pokémon Defeated:</span><span class="psl-v psl-mono" id="stat-defeated">-</span></div>
+          </div>
+        </div>
+
+        <div class="psl-card">
+          <div class="psl-card-title">Combat / Battle Target</div>
+          <div class="psl-grid-2" id="psl-battle-grid">
+            <div class="psl-kv-item"><span class="psl-k">Target Enemy:</span><span class="psl-v" id="stat-battle-enemy">-</span></div>
+            <div class="psl-kv-item"><span class="psl-k">Enemy HP:</span><span class="psl-v" id="stat-battle-hp">-</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: CANDIDATES -->
+      <div id="tab-candidates" class="psl-tab-pane">
+        <div class="psl-subtabs">
+          <button class="psl-subtab active" data-subtab="cand-economy">Economy</button>
+          <button class="psl-subtab" data-subtab="cand-shiny">Shiny / RNG</button>
+          <button class="psl-subtab" data-subtab="cand-quests">Quests</button>
+          <button class="psl-subtab" data-subtab="cand-battle">Battle</button>
+        </div>
+
+        <div id="cand-economy" class="psl-subtab-pane active">
+          <div class="psl-card">
+            <div class="psl-card-title">Economy Candidates</div>
+            <div class="psl-candidate-list" id="cand-economy-list">No candidates discovered.</div>
+          </div>
+        </div>
+
+        <div id="cand-shiny" class="psl-subtab-pane">
+          <div class="psl-card">
+            <div class="psl-card-title">Shiny & Encounter Candidates</div>
+            <div class="psl-candidate-list" id="cand-shiny-list">No candidates discovered.</div>
+          </div>
+        </div>
+
+        <div id="cand-quests" class="psl-subtab-pane">
+          <div class="psl-card">
+            <div class="psl-card-title">Quest & Reward Candidates</div>
+            <div class="psl-candidate-list" id="cand-quests-list">No candidates discovered.</div>
+          </div>
+        </div>
+
+        <div id="cand-battle" class="psl-subtab-pane">
+          <div class="psl-card">
+            <div class="psl-card-title">Combat & Attack Candidates</div>
+            <div class="psl-candidate-list" id="cand-battle-list">No candidates discovered.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: OBJECT INSPECTOR -->
+      <div id="tab-inspector" class="psl-tab-pane">
+        <div class="psl-card">
+          <div class="psl-card-title">Interactive Runtime Inspector</div>
+          <div class="psl-inspector-input-row">
+            <input type="text" id="psl-inspect-input" class="psl-input" placeholder="e.g. App.game.wallet or Battle" value="App.game.wallet" />
+            <button id="psl-btn-do-inspect" class="psl-btn psl-btn-primary">Inspect</button>
+          </div>
+          <div class="psl-inspector-output">
+            <pre id="psl-inspect-results" class="psl-code-block">Enter a valid path and click Inspect.</pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: CHANGES -->
+      <div id="tab-changes" class="psl-tab-pane">
+        <div class="psl-card">
+          <div class="psl-card-title">Live State Diff Monitor</div>
+          <p class="psl-text-sm">Click "Record Changes" on top to capture consecutive snapshots and stream observed property transitions.</p>
+          <div id="psl-changes-log" class="psl-changes-container">
+            <div class="psl-text-muted psl-text-center">Recorder is idle.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: MODULES -->
+      <div id="tab-modules" class="psl-tab-pane">
+        <div class="psl-card">
+          <div class="psl-card-title">Registered Security Lab Modules</div>
+          <div class="psl-modules-list" id="psl-modules-container">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Terminal Log Console -->
+    <div class="psl-log-section">
+      <div class="psl-log-header">
+        <span>Security Lab Internal Log</span>
+        <span id="psl-log-count" class="psl-badge">0 entries</span>
+      </div>
+      <div id="psl-terminal" class="psl-terminal">
+        <div class="psl-log-line psl-log-info">[INFO] Initializing PokéClicker Security Lab console...</div>
+      </div>
+    </div>
+  </div>
+</div>
