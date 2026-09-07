@@ -140,7 +140,10 @@
       'RouteHelper',
       'MapHelper',
       'PokemonFactory',
-      'GameController'
+      'GameController',
+      'Safari',
+      'SafariBattle',
+      'SafariPokemon'
     ];
     for (const name of otherGlobals) {
       try {
@@ -191,6 +194,12 @@
       })
     : null);
   runtimeCtx.rewardModifier = rewardModifier;
+
+  // Initialize Safari Lab & Catch Booster
+  const safariLab = runtimeCtx.safariLab || (window.SafariLab
+    ? new window.SafariLab({ windowRef: window })
+    : null);
+  runtimeCtx.safariLab = safariLab;
 
   // Connect diagnostics events with RewardLab once
   if (diagnostics && rewardLab && !diagnostics.__psl_reward_connected__) {
@@ -274,6 +283,14 @@
         }
       } catch (e) {
         logToUI('WARN', `[INSTRUMENTATION] Failed attaching Battle Reward Modifier hooks: ${e.message}`);
+      }
+    }
+
+    if (safariLab) {
+      try {
+        safariLab.installHooks(window);
+      } catch (e) {
+        logToUI('WARN', `[SAFARI] Failed installing Safari Lab hooks: ${e.message}`);
       }
     }
 
@@ -1007,6 +1024,63 @@
       trace: rewardModifier.getTrace(filter),
       status: rewardModifier.getStatus()
     };
+  });
+
+  // SAFARI LAB HANDLERS
+  bridge.registerHandler('GET_SAFARI_STATUS', async () => {
+    if (!safariLab) {
+      return {
+        mode: 'OFF',
+        multiplier: 1,
+        guaranteedCatch: false,
+        preventEscape: false,
+        preventShinyEscape: true,
+        infiniteBalls: true,
+        inSafari: false,
+        inBattle: false,
+        currentBalls: 0,
+        safariLevel: 1,
+        currentEnemy: null,
+        stats: { encounters: 0, catches: 0, ballsThrown: 0, fleesBlocked: 0 },
+        lastEncounter: { name: '-', shiny: false, baseCatchFactor: 0, effectiveCatchFactor: 0, caught: null, timestamp: null }
+      };
+    }
+    return safariLab.getStatus();
+  });
+
+  bridge.registerHandler('SET_SAFARI_MODE', async ({ mode }) => {
+    if (!safariLab) return { error: 'SafariLab not loaded' };
+    const res = safariLab.setMode(mode);
+    logToUI('INFO', `Safari Lab mode set to ${mode}`);
+    return res;
+  });
+
+  bridge.registerHandler('SET_SAFARI_MULTIPLIER', async ({ multiplier }) => {
+    if (!safariLab) return { error: 'SafariLab not loaded' };
+    const res = safariLab.setMultiplier(multiplier);
+    logToUI('INFO', `Safari Lab multiplier set to ${safariLab.multiplier}x (Guaranteed: ${safariLab.multiplier >= 100})`);
+    return res;
+  });
+
+  bridge.registerHandler('SET_SAFARI_OPTIONS', async (options) => {
+    if (!safariLab) return { error: 'SafariLab not loaded' };
+    const res = safariLab.setOptions(options);
+    logToUI('INFO', `Safari Lab options updated: ${JSON.stringify(options)}`);
+    return res;
+  });
+
+  bridge.registerHandler('RESET_SAFARI_STATS', async () => {
+    if (!safariLab) return { error: 'SafariLab not loaded' };
+    const res = safariLab.resetStats();
+    logToUI('INFO', 'Safari Lab session stats reset.');
+    return res;
+  });
+
+  bridge.registerHandler('RESET_SAFARI_SETTINGS', async () => {
+    if (!safariLab) return { error: 'SafariLab not loaded' };
+    const res = safariLab.reset();
+    logToUI('INFO', 'Safari Lab settings reset to default.');
+    return res;
   });
 
   // RUNTIME BRIDGE RECOVERY & HOOK HEALTH HANDLERS (FASE 3.1.1)

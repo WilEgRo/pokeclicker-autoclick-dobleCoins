@@ -39,12 +39,9 @@
     <div class="psl-tabs">
       <button class="psl-tab active" data-tab="tab-autoclick">⚡ Auto Click</button>
       <button class="psl-tab" data-tab="tab-rewards">💰 Rewards Lab</button>
-      <button class="psl-tab" data-tab="tab-overview">Overview</button>
+      <button class="psl-tab" data-tab="tab-safari">🎯 Safari Lab</button>
       <button class="psl-tab" data-tab="tab-state">Live State</button>
-      <button class="psl-tab" data-tab="tab-candidates">Candidates</button>
-      <button class="psl-tab" data-tab="tab-inspector">Inspector</button>
-      <button class="psl-tab" data-tab="tab-changes">Changes</button>
-      <button class="psl-tab" data-tab="tab-modules">Modules</button>
+      <button class="psl-tab" data-tab="tab-overview">Overview</button>
     </div>
 
     <!-- Tab Content -->
@@ -446,75 +443,94 @@
         </div>
       </div>
 
-      <!-- TAB: CANDIDATES -->
-      <div id="tab-candidates" class="psl-tab-pane">
-        <div class="psl-subtabs">
-          <button class="psl-subtab active" data-subtab="cand-economy">Economy</button>
-          <button class="psl-subtab" data-subtab="cand-shiny">Shiny / RNG</button>
-          <button class="psl-subtab" data-subtab="cand-quests">Quests</button>
-          <button class="psl-subtab" data-subtab="cand-battle">Battle</button>
-        </div>
-
-        <div id="cand-economy" class="psl-subtab-pane active">
-          <div class="psl-card">
-            <div class="psl-card-title">Economy Candidates</div>
-            <div class="psl-candidate-list" id="cand-economy-list">No candidates discovered.</div>
-          </div>
-        </div>
-
-        <div id="cand-shiny" class="psl-subtab-pane">
-          <div class="psl-card">
-            <div class="psl-card-title">Shiny & Encounter Candidates</div>
-            <div class="psl-candidate-list" id="cand-shiny-list">No candidates discovered.</div>
-          </div>
-        </div>
-
-        <div id="cand-quests" class="psl-subtab-pane">
-          <div class="psl-card">
-            <div class="psl-card-title">Quest & Reward Candidates</div>
-            <div class="psl-candidate-list" id="cand-quests-list">No candidates discovered.</div>
-          </div>
-        </div>
-
-        <div id="cand-battle" class="psl-subtab-pane">
-          <div class="psl-card">
-            <div class="psl-card-title">Combat & Attack Candidates</div>
-            <div class="psl-candidate-list" id="cand-battle-list">No candidates discovered.</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- TAB: OBJECT INSPECTOR -->
-      <div id="tab-inspector" class="psl-tab-pane">
+      <!-- TAB: SAFARI LAB -->
+      <div id="tab-safari" class="psl-tab-pane">
+        <!-- Safari Master Catch Card -->
         <div class="psl-card">
-          <div class="psl-card-title">Interactive Runtime Inspector</div>
-          <div class="psl-inspector-input-row">
-            <input type="text" id="psl-inspect-input" class="psl-input" placeholder="e.g. App.game.wallet or Battle" value="App.game.wallet" />
-            <button id="psl-btn-do-inspect" class="psl-btn psl-btn-primary">Inspect</button>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <div class="psl-card-title" style="margin-bottom: 0;">🎯 Safari Catch Booster</div>
+            <span class="psl-pill psl-pill-success" id="safari-status-pill">100% CATCH ACTIVO</span>
           </div>
-          <div class="psl-inspector-output">
-            <pre id="psl-inspect-results" class="psl-code-block">Enter a valid path and click Inspect.</pre>
-          </div>
-        </div>
-      </div>
+          <p class="psl-text-sm" style="margin: 2px 0 10px 0;">
+            Aumento y garantía de captura para la Zona Safari. Evita la huida de Pokémon salvajes y shinies, y mantiene tus Safari Balls listas.
+          </p>
 
-      <!-- TAB: CHANGES -->
-      <div id="tab-changes" class="psl-tab-pane">
-        <div class="psl-card">
-          <div class="psl-card-title">Live State Diff Monitor</div>
-          <p class="psl-text-sm">Click "Record Changes" on top to capture consecutive snapshots and stream observed property transitions.</p>
-          <div id="psl-changes-log" class="psl-changes-container">
-            <div class="psl-text-muted psl-text-center">Recorder is idle.</div>
+          <!-- Mode Controls -->
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; gap: 8px;">
+            <div style="display: flex; gap: 4px;" id="safari-mode-buttons">
+              <button class="psl-btn psl-btn-ghost" id="safari-btn-off" data-safari-mode="OFF">OFF (Vanilla)</button>
+              <button class="psl-btn psl-btn-ghost active" id="safari-btn-active" data-safari-mode="ACTIVE">ACTIVE</button>
+            </div>
+            <button id="safari-btn-reset" class="psl-btn psl-btn-ghost psl-btn-reset" title="Restablecer opciones de Safari">↺ Reset</button>
           </div>
-        </div>
-      </div>
 
-      <!-- TAB: MODULES -->
-      <div id="tab-modules" class="psl-tab-pane">
-        <div class="psl-card">
-          <div class="psl-card-title">Registered Security Lab Modules</div>
-          <div class="psl-modules-list" id="psl-modules-container">
-            <!-- Rendered dynamically -->
+          <!-- Multiplier Presets & Stepper -->
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; background: rgba(0,0,0,0.25); padding: 6px 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <span class="psl-k" style="font-size: 11px;">Ratio / Multiplicador:</span>
+              <button id="safari-btn-dec" class="psl-btn psl-btn-ghost" style="padding: 2px 8px; font-weight: bold;">-</button>
+              <input type="number" id="safari-input-mult" min="1" max="100" step="1" value="100" class="psl-input psl-mono" style="width: 55px; text-align: center; padding: 2px 4px;" />
+              <button id="safari-btn-inc" class="psl-btn psl-btn-ghost" style="padding: 2px 8px; font-weight: bold;">+</button>
+            </div>
+            <div style="display: flex; gap: 4px;" id="safari-quick-chips">
+              <button class="psl-chip" data-safari-val="1">1x</button>
+              <button class="psl-chip" data-safari-val="2">2x</button>
+              <button class="psl-chip" data-safari-val="5">5x</button>
+              <button class="psl-chip" data-safari-val="10">10x</button>
+              <button class="psl-chip active" data-safari-val="100">100% MAX</button>
+            </div>
+          </div>
+
+          <!-- Anti-Escape & Utility Options -->
+          <div style="background: rgba(0,0,0,0.2); padding: 8px 10px; border-radius: 6px; margin-bottom: 10px; display: flex; flex-direction: column; gap: 6px;">
+            <label style="font-size: 11px; color: #e2e8f0; display: flex; align-items: center; gap: 6px; cursor: pointer;">
+              <input type="checkbox" id="safari-chk-shiny-escape" checked />
+              <span>✨ <strong>Protección Anti-Huida de Shinies:</strong> Garantiza que ningún Pokémon shiny escape jamás.</span>
+            </label>
+            <label style="font-size: 11px; color: #e2e8f0; display: flex; align-items: center; gap: 6px; cursor: pointer;">
+              <input type="checkbox" id="safari-chk-all-escape" />
+              <span>🚫 <strong>Prevenir Toda Huida (0% Escape):</strong> Ningún Pokémon salvaje del Safari huirá.</span>
+            </label>
+            <label style="font-size: 11px; color: #e2e8f0; display: flex; align-items: center; gap: 6px; cursor: pointer;">
+              <input type="checkbox" id="safari-chk-infinite-balls" checked />
+              <span>♾️ <strong>Safari Balls Infinitas:</strong> Mantiene tus Safari Balls siempre reabastecidas (30).</span>
+            </label>
+          </div>
+
+          <!-- Current Battle Readouts -->
+          <div class="psl-card-title" style="font-size: 11px; margin-bottom: 6px;">Estado del Safari en Vivo</div>
+          <div class="psl-grid-3" style="margin-bottom: 8px;">
+            <div class="psl-stat-box">
+              <span class="psl-stat-label">Zona Safari</span>
+              <span class="psl-stat-val" id="safari-live-status">Fuera de Zona</span>
+            </div>
+            <div class="psl-stat-box">
+              <span class="psl-stat-label">Bolas Disponibles</span>
+              <span class="psl-stat-val psl-mono" id="safari-balls-val">-</span>
+            </div>
+            <div class="psl-stat-box">
+              <span class="psl-stat-label">Nivel Safari</span>
+              <span class="psl-stat-val psl-mono" id="safari-level-val">-</span>
+            </div>
+          </div>
+
+          <!-- Enemy & Catch Chance Info -->
+          <div class="psl-grid-2" style="background: rgba(15,23,42,0.6); padding: 8px; border-radius: 6px; margin-bottom: 8px;">
+            <div class="psl-kv-item"><span class="psl-k">Objetivo Safari:</span><span class="psl-v" id="safari-enemy-name">-</span></div>
+            <div class="psl-kv-item"><span class="psl-k">Es Shiny:</span><span class="psl-v" id="safari-enemy-shiny">-</span></div>
+            <div class="psl-kv-item"><span class="psl-k">Ratio Base:</span><span class="psl-v psl-mono" id="safari-base-rate">-</span></div>
+            <div class="psl-kv-item"><span class="psl-k">Ratio Efectivo:</span><span class="psl-v psl-mono" id="safari-eff-rate" style="color: #4ade80; font-weight: bold;">-</span></div>
+          </div>
+
+          <!-- Safari Session Stats -->
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px;">
+            <div class="psl-card-title" style="font-size: 11px; margin-bottom: 0;">Sesión de Capturas Safari</div>
+            <button id="safari-btn-reset-stats" class="psl-btn psl-btn-ghost" style="font-size: 9px; padding: 2px 6px;">Resetear Sesión</button>
+          </div>
+          <div class="psl-grid-3" style="margin-top: 6px;">
+            <div class="psl-stat-box"><span class="psl-stat-label">Capturados</span><span class="psl-stat-val psl-mono" id="safari-stat-catches" style="color: #4ade80;">0</span></div>
+            <div class="psl-stat-box"><span class="psl-stat-label">Bolas Lanzadas</span><span class="psl-stat-val psl-mono" id="safari-stat-balls">0</span></div>
+            <div class="psl-stat-box"><span class="psl-stat-label">Huidas Bloqueadas</span><span class="psl-stat-val psl-mono" id="safari-stat-flees" style="color: #38bdf8;">0</span></div>
           </div>
         </div>
       </div>

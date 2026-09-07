@@ -48,6 +48,7 @@
       'modules/diagnostics/battle-lifecycle-diagnostics.js',
       'modules/rewards/reward-economy-lab.js',
       'modules/rewards/battle-reward-modifier.js',
+      'modules/safari/safari-lab.js',
       'core/message-bridge.js',
       'core/battle-state-machine.js',
       'page-bridge.js'

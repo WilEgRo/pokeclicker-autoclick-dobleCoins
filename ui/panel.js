@@ -179,9 +179,33 @@
         btnDoInspect: q('#psl-btn-do-inspect'),
         inspectResults: q('#psl-inspect-results'),
 
-        // Changes & Modules
+        // Changes & Modules (deprecated/hidden)
         changesLog: q('#psl-changes-log'),
         modulesContainer: q('#psl-modules-container'),
+
+        // Safari Lab
+        safariStatusPill: q('#safari-status-pill'),
+        safariBtnOff: q('#safari-btn-off'),
+        safariBtnActive: q('#safari-btn-active'),
+        safariBtnReset: q('#safari-btn-reset'),
+        safariBtnDec: q('#safari-btn-dec'),
+        safariBtnInc: q('#safari-btn-inc'),
+        safariInputMult: q('#safari-input-mult'),
+        safariQuickChips: q('#safari-quick-chips'),
+        safariChkShinyEscape: q('#safari-chk-shiny-escape'),
+        safariChkAllEscape: q('#safari-chk-all-escape'),
+        safariChkInfiniteBalls: q('#safari-chk-infinite-balls'),
+        safariLiveStatus: q('#safari-live-status'),
+        safariBallsVal: q('#safari-balls-val'),
+        safariLevelVal: q('#safari-level-val'),
+        safariEnemyName: q('#safari-enemy-name'),
+        safariEnemyShiny: q('#safari-enemy-shiny'),
+        safariBaseRate: q('#safari-base-rate'),
+        safariEffRate: q('#safari-eff-rate'),
+        safariBtnResetStats: q('#safari-btn-reset-stats'),
+        safariStatCatches: q('#safari-stat-catches'),
+        safariStatBalls: q('#safari-stat-balls'),
+        safariStatFlees: q('#safari-stat-flees'),
 
         // Terminal
         terminal: q('#psl-terminal'),
@@ -208,6 +232,9 @@
 
           if (tab.dataset.tab === 'tab-rewards') {
             this.refreshRewardLab();
+          }
+          if (tab.dataset.tab === 'tab-safari') {
+            this.refreshSafariLab();
           }
         });
       });
@@ -432,15 +459,122 @@
       }
 
       // Actions
-      this.el.btnRefresh.addEventListener('click', () => this.refreshRuntime());
-      this.el.btnRecord.addEventListener('click', () => this.toggleRecording());
-      this.el.btnExport.addEventListener('click', () => this.exportDiagnosticsJSON());
-      this.el.btnClearLog.addEventListener('click', () => this.clearLog());
+      if (this.el.btnRefresh) this.el.btnRefresh.addEventListener('click', () => this.refreshRuntime());
+      if (this.el.btnRecord) this.el.btnRecord.addEventListener('click', () => this.toggleRecording());
+      if (this.el.btnExport) this.el.btnExport.addEventListener('click', () => this.exportDiagnosticsJSON());
+      if (this.el.btnClearLog) this.el.btnClearLog.addEventListener('click', () => this.clearLog());
       
-      this.el.btnDoInspect.addEventListener('click', () => this.inspectCurrentPath());
-      this.el.inspectInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') this.inspectCurrentPath();
-      });
+      if (this.el.btnDoInspect) {
+        this.el.btnDoInspect.addEventListener('click', () => this.inspectCurrentPath());
+      }
+      if (this.el.inspectInput) {
+        this.el.inspectInput.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') this.inspectCurrentPath();
+        });
+      }
+
+      // Safari Lab Controls
+      const setSafariMode = async (mode) => {
+        try {
+          const status = await this.bridge.request('SET_SAFARI_MODE', { mode });
+          this.renderSafariStatus(status);
+          this.appendLog('INFO', `Safari Lab modo: ${mode}`);
+        } catch (err) {
+          this.appendLog('ERROR', `Error al cambiar modo Safari: ${err.message}`);
+        }
+      };
+
+      if (this.el.safariBtnOff) {
+        this.el.safariBtnOff.addEventListener('click', () => setSafariMode('OFF'));
+      }
+      if (this.el.safariBtnActive) {
+        this.el.safariBtnActive.addEventListener('click', () => setSafariMode('ACTIVE'));
+      }
+
+      const updateSafariMultiplier = async (val) => {
+        let num = Number(val);
+        if (isNaN(num) || num < 1) num = 1;
+        if (num > 100) num = 100;
+        try {
+          const status = await this.bridge.request('SET_SAFARI_MULTIPLIER', { multiplier: num });
+          this.renderSafariStatus(status);
+        } catch (err) {
+          this.appendLog('ERROR', `Error multiplicador Safari: ${err.message}`);
+        }
+      };
+
+      if (this.el.safariInputMult) {
+        this.el.safariInputMult.addEventListener('change', (e) => updateSafariMultiplier(e.target.value));
+      }
+      if (this.el.safariBtnDec) {
+        this.el.safariBtnDec.addEventListener('click', () => {
+          const cur = Number(this.el.safariInputMult?.value) || 1;
+          updateSafariMultiplier(Math.max(1, cur - 1));
+        });
+      }
+      if (this.el.safariBtnInc) {
+        this.el.safariBtnInc.addEventListener('click', () => {
+          const cur = Number(this.el.safariInputMult?.value) || 1;
+          updateSafariMultiplier(Math.min(100, cur + 1));
+        });
+      }
+
+      if (this.el.safariQuickChips) {
+        this.el.safariQuickChips.querySelectorAll('.psl-chip').forEach(chip => {
+          chip.addEventListener('click', () => {
+            const val = Number(chip.dataset.safariVal);
+            if (!isNaN(val)) updateSafariMultiplier(val);
+          });
+        });
+      }
+
+      const updateSafariOptions = async () => {
+        try {
+          const options = {
+            preventShinyEscape: this.el.safariChkShinyEscape ? this.el.safariChkShinyEscape.checked : true,
+            preventEscape: this.el.safariChkAllEscape ? this.el.safariChkAllEscape.checked : false,
+            infiniteBalls: this.el.safariChkInfiniteBalls ? this.el.safariChkInfiniteBalls.checked : true
+          };
+          const status = await this.bridge.request('SET_SAFARI_OPTIONS', options);
+          this.renderSafariStatus(status);
+        } catch (err) {
+          this.appendLog('ERROR', `Error opciones Safari: ${err.message}`);
+        }
+      };
+
+      if (this.el.safariChkShinyEscape) {
+        this.el.safariChkShinyEscape.addEventListener('change', updateSafariOptions);
+      }
+      if (this.el.safariChkAllEscape) {
+        this.el.safariChkAllEscape.addEventListener('change', updateSafariOptions);
+      }
+      if (this.el.safariChkInfiniteBalls) {
+        this.el.safariChkInfiniteBalls.addEventListener('change', updateSafariOptions);
+      }
+
+      if (this.el.safariBtnReset) {
+        this.el.safariBtnReset.addEventListener('click', async () => {
+          try {
+            const status = await this.bridge.request('RESET_SAFARI_SETTINGS');
+            this.renderSafariStatus(status);
+            this.appendLog('INFO', 'Ajustes de Safari Lab restablecidos.');
+          } catch (err) {
+            this.appendLog('ERROR', `Error al resetear Safari: ${err.message}`);
+          }
+        });
+      }
+
+      if (this.el.safariBtnResetStats) {
+        this.el.safariBtnResetStats.addEventListener('click', async () => {
+          try {
+            const status = await this.bridge.request('RESET_SAFARI_STATS');
+            this.renderSafariStatus(status);
+            this.appendLog('INFO', 'Estadísticas de Safari reseteadas.');
+          } catch (err) {
+            this.appendLog('ERROR', `Error al resetear estadísticas: ${err.message}`);
+          }
+        });
+      }
 
       if (this.el.btnAuditContext) {
         this.el.btnAuditContext.addEventListener('click', async () => {
@@ -499,7 +633,13 @@
         await this.refreshRuntime();
         this.syncAutoClickStatus();
         this.refreshRewardLab();
+        this.refreshSafariLab();
       });
+
+      // Periodic Safari status polling
+      setInterval(() => {
+        this.refreshSafariLab();
+      }, 1500);
     }
 
     initDraggable() {
@@ -1101,14 +1241,14 @@
       this.el.statBattleEnemy.textContent = battle.name || 'None';
       this.el.statBattleHp.textContent = (battle.health !== undefined && battle.maxHealth !== undefined) ? `${battle.health} / ${battle.maxHealth}` : '-';
 
-      // Candidates
-      this.renderCandidateList(this.el.candEconomyList, data.candidates.economy);
-      this.renderCandidateList(this.el.candShinyList, data.candidates.shiny);
-      this.renderCandidateList(this.el.candQuestsList, data.candidates.quests);
-      this.renderCandidateList(this.el.candBattleList, data.candidates.battle);
+      // Candidates (if container exists)
+      if (this.el.candEconomyList) this.renderCandidateList(this.el.candEconomyList, data.candidates?.economy);
+      if (this.el.candShinyList) this.renderCandidateList(this.el.candShinyList, data.candidates?.shiny);
+      if (this.el.candQuestsList) this.renderCandidateList(this.el.candQuestsList, data.candidates?.quests);
+      if (this.el.candBattleList) this.renderCandidateList(this.el.candBattleList, data.candidates?.battle);
 
-      // Modules
-      this.renderModules(data.modules || []);
+      // Modules (if container exists)
+      if (this.el.modulesContainer) this.renderModules(data.modules || []);
     }
 
     renderCandidateList(container, candidates) {
@@ -1138,6 +1278,7 @@
     }
 
     appendDiff(diff) {
+      if (!this.el.changesLog) return;
       if (this.el.changesLog.querySelector('.psl-text-muted')) {
         this.el.changesLog.innerHTML = '';
       }
@@ -1201,6 +1342,117 @@
       URL.revokeObjectURL(url);
 
       this.appendLog('INFO', 'Exported diagnostics JSON locally.');
+    }
+
+    async refreshSafariLab() {
+      try {
+        const status = await this.bridge.request('GET_SAFARI_STATUS');
+        if (status) this.renderSafariStatus(status);
+      } catch (_) {}
+    }
+
+    renderSafariStatus(status) {
+      if (!status) return;
+
+      // Status pill & buttons
+      const isOff = status.mode === 'OFF';
+      const isGuaranteed = status.guaranteedCatch;
+
+      if (this.el.safariStatusPill) {
+        if (isOff) {
+          this.el.safariStatusPill.textContent = 'INACTIVO (VANILLA)';
+          this.el.safariStatusPill.className = 'psl-pill psl-pill-muted';
+        } else if (isGuaranteed) {
+          this.el.safariStatusPill.textContent = '100% CATCH ACTIVO';
+          this.el.safariStatusPill.className = 'psl-pill psl-pill-success';
+        } else {
+          this.el.safariStatusPill.textContent = `${status.multiplier}x CATCH ACTIVO`;
+          this.el.safariStatusPill.className = 'psl-pill psl-pill-info';
+        }
+      }
+
+      if (this.el.safariBtnOff) {
+        this.el.safariBtnOff.classList.toggle('active', isOff);
+      }
+      if (this.el.safariBtnActive) {
+        this.el.safariBtnActive.classList.toggle('active', !isOff);
+      }
+
+      // Multiplier input & chips
+      if (this.el.safariInputMult) {
+        this.el.safariInputMult.value = status.multiplier;
+      }
+      if (this.el.safariQuickChips) {
+        this.el.safariQuickChips.querySelectorAll('.psl-chip').forEach(chip => {
+          const val = Number(chip.dataset.safariVal);
+          chip.classList.toggle('active', val === status.multiplier);
+        });
+      }
+
+      // Checkboxes
+      if (this.el.safariChkShinyEscape) {
+        this.el.safariChkShinyEscape.checked = Boolean(status.preventShinyEscape);
+      }
+      if (this.el.safariChkAllEscape) {
+        this.el.safariChkAllEscape.checked = Boolean(status.preventEscape);
+      }
+      if (this.el.safariChkInfiniteBalls) {
+        this.el.safariChkInfiniteBalls.checked = Boolean(status.infiniteBalls);
+      }
+
+      // Live state
+      if (this.el.safariLiveStatus) {
+        if (status.inBattle) {
+          this.el.safariLiveStatus.textContent = 'En Batalla Safari';
+          this.el.safariLiveStatus.style.color = '#38bdf8';
+        } else if (status.inSafari) {
+          this.el.safariLiveStatus.textContent = 'Explorando Safari';
+          this.el.safariLiveStatus.style.color = '#4ade80';
+        } else {
+          this.el.safariLiveStatus.textContent = 'Fuera de Zona';
+          this.el.safariLiveStatus.style.color = '#94a3b8';
+        }
+      }
+
+      if (this.el.safariBallsVal) {
+        this.el.safariBallsVal.textContent = status.currentBalls !== undefined ? status.currentBalls : '-';
+      }
+      if (this.el.safariLevelVal) {
+        this.el.safariLevelVal.textContent = status.safariLevel !== undefined ? `Nivel ${status.safariLevel}` : '-';
+      }
+
+      // Enemy readouts
+      const enemy = status.currentEnemy;
+      if (enemy) {
+        if (this.el.safariEnemyName) this.el.safariEnemyName.textContent = enemy.name;
+        if (this.el.safariEnemyShiny) {
+          this.el.safariEnemyShiny.textContent = enemy.shiny ? '✨ SÍ' : 'No';
+          this.el.safariEnemyShiny.style.color = enemy.shiny ? '#facc15' : '#94a3b8';
+        }
+        if (this.el.safariBaseRate) this.el.safariBaseRate.textContent = `${enemy.baseCatchFactor}%`;
+        if (this.el.safariEffRate) this.el.safariEffRate.textContent = `${enemy.effectiveCatchFactor}%`;
+      } else if (status.lastEncounter && status.lastEncounter.name !== '-') {
+        const last = status.lastEncounter;
+        if (this.el.safariEnemyName) this.el.safariEnemyName.textContent = `${last.name} (Último)`;
+        if (this.el.safariEnemyShiny) {
+          this.el.safariEnemyShiny.textContent = last.shiny ? '✨ SÍ' : 'No';
+          this.el.safariEnemyShiny.style.color = last.shiny ? '#facc15' : '#94a3b8';
+        }
+        if (this.el.safariBaseRate) this.el.safariBaseRate.textContent = `${last.baseCatchFactor}%`;
+        if (this.el.safariEffRate) this.el.safariEffRate.textContent = `${last.effectiveCatchFactor}%`;
+      } else {
+        if (this.el.safariEnemyName) this.el.safariEnemyName.textContent = 'Sin encuentro activo';
+        if (this.el.safariEnemyShiny) this.el.safariEnemyShiny.textContent = '-';
+        if (this.el.safariBaseRate) this.el.safariBaseRate.textContent = '-';
+        if (this.el.safariEffRate) this.el.safariEffRate.textContent = '-';
+      }
+
+      // Session stats
+      if (status.stats) {
+        if (this.el.safariStatCatches) this.el.safariStatCatches.textContent = status.stats.catches || 0;
+        if (this.el.safariStatBalls) this.el.safariStatBalls.textContent = status.stats.ballsThrown || 0;
+        if (this.el.safariStatFlees) this.el.safariStatFlees.textContent = status.stats.fleesBlocked || 0;
+      }
     }
   }
 

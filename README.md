@@ -20,9 +20,10 @@
 
 **PokéClicker AutoClick & DobleCoins** es una potente extensión basada en **Manifest V3** diseñada para integrarse de forma nativa, fluida y segura en el juego web **PokéClicker**. Desarrollada con un diseño moderno y minimalista, incorpora un panel flotante (*Shadow DOM*) que no interfiere con los estilos ni el rendimiento del juego original.
 
-El proyecto combina dos herramientas esenciales para la mejor experiencia de juego:
+El proyecto combina tres herramientas esenciales para la mejor experiencia de juego:
 1. ⚡ **AutoClick Inteligente:** Clics automáticos ultra rápidos (hasta 30 CPS) con reconocimiento dinámico del tipo de batalla.
 2. 💰 **DobleCoins (Reward Modifier):** Multiplicador seguro de monedas y divisas (`2x`, `5x`, `10x` o personalizado) con protección estricta contra inconsistencias de guardado.
+3. 🎯 **Safari Lab (Catch Booster):** Aumento del ratio de captura (incluyendo 100% garantizado), escudo anti-huida para Pokémon y Shinies, y Safari Balls infinitas.
 
 ---
 
@@ -52,12 +53,17 @@ El proyecto combina dos herramientas esenciales para la mejor experiencia de jue
   * `ACTIVE`: Aplica la bonificación mediante transacciones atómicas verificadas.
 * **Protección Anti-Corrupción:** Aislamiento de contexto estricto. Las tiendas, transacciones de guardado (`App.game.save()`) y recompensas fijas no son alteradas, protegiendo tus partidas contra archivos de guardado corruptos.
 
-### 🔬 3. Consola Forense & Inspector de Runtime
+### 🎯 3. Safari Lab & Catch Booster (¡Nuevo!)
+* **Captura 100% Garantizada o Multiplicada:** Captura garantizada al primer lanzamiento de Safari Ball (`100% MAX`) o multiplicadores configurables (`2x`, `5x`, `10x`).
+* **✨ Escudo Anti-Huida de Shinies:** Asegura que si te encuentras con un Pokémon Shiny en la Zona Safari, jamás huirá de la batalla.
+* **🚫 Prevenir Toda Huida (0% Escape):** Opción para evitar que cualquier Pokémon salvaje del Safari escape.
+* **♾️ Safari Balls Infinitas:** Repone tus Safari Balls automáticamente al lanzarlas para que nunca te quedes sin bolas (30) durante una expedición.
+* **Telemetría en Vivo:** Muestra el objetivo actual del Safari, si es Shiny, su ratio base y su ratio efectivo con multiplicador, además de contadores de capturas y huidas bloqueadas.
+
+### 🔬 4. Consola Flotante Moderna & Estado en Vivo
 * **Diseño Glassmorphism / Dark Mode:** Interfaz elegante, flotante, arrastrable y minimizable construida bajo Shadow DOM aislado.
 * **Live State Monitor:** Consulta instantánea de todos los saldos de la billetera (`Wallet`), estadísticas de captura, encuentros shiny y contadores de combate.
-* **Inspector Reactivo de Knockout.js:** Inspección en vivo y segura de observables de Knockout (`App.game`, `Battle`, `player`, etc.) utilizando `.peek()` para evitar efectos secundarios.
-* **Monitor de Eventos (`Record Changes`):** Registro de transiciones y cambios de estado en tiempo real.
-* **Exportación Forense:** Descarga de reportes estructurados en formato JSON con la firma del runtime y diagnósticos completos con un solo clic.
+* **Pestañas Simplificadas y Enfocadas:** Interfaz limpia con las herramientas que realmente usas (`Auto Click`, `Rewards Lab`, `Safari Lab`, `Live State` y `Overview`).
 
 ---
 
@@ -100,9 +106,9 @@ La consola flotante aparecerá automáticamente en la esquina superior derecha d
 
 ```
 ┌──────────────────────────────────────────────────────────────┐
-│  POKÉCLICKER LAB: AutoClick & DobleCoins                     │
+│  POKÉCLICKER LAB: AutoClick, DobleCoins & Safari Lab         │
 ├──────────────────────────────────────────────────────────────┤
-│  [⚡ Auto Click] [💰 Rewards Lab] [Live State] [Inspector]    │
+│  [⚡ Auto Click] [💰 Rewards Lab] [🎯 Safari Lab] [State] ...  │
 └──────────────────────────────────────────────────────────────┘
 ```
 
@@ -119,13 +125,19 @@ La consola flotante aparecerá automáticamente en la esquina superior derecha d
 4. Elige las divisas que deseas multiplicar (por defecto **💵 Money**).
 5. Al derrotar a cualquier Pokémon salvaje en las rutas, recibirás automáticamente el doble de monedas con verificación en tiempo real en la pantalla.
 
+### Activación del Booster de Zona Safari (100% Catch & Anti-Huida)
+1. Abre la pestaña **`🎯 Safari Lab`**.
+2. Verifica que esté en modo **`ACTIVE`** y selecciona **`100% MAX`** (o el multiplicador deseado).
+3. Asegúrate de tener marcada la opción **✨ Protección Anti-Huida de Shinies** o **🚫 Prevenir Toda Huida**.
+4. ¡Ingresa a la Zona Safari! Al lanzar una Safari Ball, el Pokémon será capturado de forma limpia e instantánea, y tus bolas se mantendrán reabastecidas.
+
 ---
 
 ## 📂 Estructura del Proyecto
 
 ```text
 pokeclicker-autoclick-dobleCoins/
-├── manifest.json              # Configuración Manifest V3 y permisos
+├── manifest.json              # Configuración Manifest V3 y recursos
 ├── background.js             # Service Worker de ciclo de vida en segundo plano
 ├── content.js                # Content script: puente con MAIN world y Shadow DOM
 ├── page-bridge.js            # Inyección en el contexto de ejecución de PokéClicker
@@ -146,17 +158,21 @@ pokeclicker-autoclick-dobleCoins/
 │   ├── diagnostics/          # Diagnóstico del ciclo de vida de combates
 │   │   ├── battle-lifecycle-diagnostics.js
 │   │   └── runtime-diagnostics.js
-│   └── rewards/              # Motor de DobleCoins y economía
-│       ├── battle-reward-modifier.js  # Multiplicador controlado en tiempo real
-│       └── reward-economy-lab.js      # Monitor y telemetría de wallet
+│   ├── rewards/              # Motor de DobleCoins y economía
+│   │   ├── battle-reward-modifier.js  # Multiplicador controlado en tiempo real
+│   │   └── reward-economy-lab.js      # Monitor y telemetría de wallet
+│   └── safari/               # 🎯 Motor de Zona Safari & Catch Booster
+│       └── safari-lab.js     # Captura 100%, anti-huida y bolas infinitas
 │
 ├── ui/                       # Interfaz visual de usuario
-│   ├── panel.html            # Plantilla estructural de la consola
+│   ├── panel.html            # Plantilla estructural de la consola (Pestañas optimizadas)
 │   ├── panel.css             # Estilos oscuros / glassmorphism
 │   └── panel.js              # Controlador interactivo y enlace de eventos
 │
-├── test/                     # Pruebas unitarias automatizadas
-│   └── inspector.test.js     # Pruebas con Node.js Test Runner
+├── test/                     # Pruebas unitarias automatizadas (160 tests)
+│   ├── inspector.test.js     # Pruebas de núcleo
+│   ├── safari-lab.test.js    # Pruebas de SafariLab
+│   └── ...                   # Suites de recompensas y runtime
 │
 ├── package.json              # Metadata y scripts de prueba
 ├── LICENSE                   # Licencia de código abierto MIT
