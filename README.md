@@ -54,13 +54,12 @@ El proyecto combina tres herramientas esenciales para la mejor experiencia de ju
   * `ACTIVE`: Aplica la bonificación mediante transacciones atómicas verificadas.
 * **Protección Anti-Corrupción:** Aislamiento de contexto estricto. Las tiendas, transacciones de guardado (`App.game.save()`) y recompensas fijas no son alteradas, protegiendo tus partidas contra archivos de guardado corruptos.
 
-### 🎯 3. Safari Lab & Catch Booster (Zona Safari & Johto Bug Contest)
+### 🎯 3. Safari Lab & Catch Booster (Zona Safari)
 * **Captura 100% Garantizada o Multiplicada:** Captura garantizada al primer lanzamiento de Safari Ball (`100% MAX`) o multiplicadores configurables (`2x`, `5x`, `10x`).
-* **🎟️ Doble Contest Tokens (Johto):** Duplica (`2x`) o multiplica (`5x`, `10x`, `25x`) automáticamente los **Contest Tokens** que recibes cada vez que capturas un Pokémon en el Parque Nacional / Safari de Johto.
 * **✨ Escudo Anti-Huida de Shinies:** Asegura que si te encuentras con un Pokémon Shiny en la Zona Safari, jamás huirá de la batalla.
 * **🚫 Prevenir Toda Huida (0% Escape):** Opción para evitar que cualquier Pokémon salvaje del Safari escape.
 * **♾️ Safari Balls Infinitas:** Repone tus Safari Balls automáticamente al lanzarlas para que nunca te quedes sin bolas (30) durante una expedición.
-* **Telemetría en Vivo:** Muestra el objetivo actual del Safari, si es Shiny, su ratio base y su ratio efectivo con multiplicador, además de contadores de capturas, huidas bloqueadas y Contest Tokens acumulados.
+* **Telemetría en Vivo:** Muestra el objetivo actual del Safari, si es Shiny, su ratio base y su ratio efectivo con multiplicador, además de contadores de capturas y huidas bloqueadas.
 
 ### 🔬 4. Consola Flotante Moderna & Estado en Vivo
 * **Diseño Glassmorphism / Dark Mode:** Interfaz elegante, flotante, arrastrable y minimizable construida bajo Shadow DOM aislado.

@@ -133,7 +133,7 @@ describe('SafariLab Unit Tests', () => {
     const lab = new SafariLab({ mode: 'OFF', multiplier: 1 });
     lab.setMode('ACTIVE');
     lab.setMultiplier(5);
-    lab.setOptions({ preventEscape: true, infiniteBalls: false, doubleContestTokens: true, contestTokenMultiplier: 3 });
+    lab.setOptions({ preventEscape: true, infiniteBalls: false });
 
     const status = lab.getStatus();
     assert.strictEqual(status.mode, 'ACTIVE');
@@ -141,47 +141,5 @@ describe('SafariLab Unit Tests', () => {
     assert.strictEqual(status.guaranteedCatch, false);
     assert.strictEqual(status.preventEscape, true);
     assert.strictEqual(status.infiniteBalls, false);
-    assert.strictEqual(status.doubleContestTokens, true);
-    assert.strictEqual(status.contestTokenMultiplier, 3);
-  });
-
-  test('9. gainContestTokens multiplies tokens in Johto Safari', () => {
-    const mock = createMockGame();
-    let tokensAwarded = 0;
-    mock.App = {
-      game: {
-        wallet: {
-          gainContestTokens: (amount) => {
-            tokensAwarded += amount;
-          }
-        }
-      }
-    };
-
-    const lab = new SafariLab({
-      windowRef: mock,
-      mode: 'ACTIVE',
-      doubleContestTokens: true,
-      contestTokenMultiplier: 2
-    });
-    lab.installHooks(mock);
-
-    // Call gainContestTokens as Johto Safari does upon catch
-    mock.App.game.wallet.gainContestTokens(25);
-
-    // Should be multiplied by 2 => 50
-    assert.strictEqual(tokensAwarded, 50);
-    assert.strictEqual(lab.getStatus().stats.contestTokensEarned, 50);
-
-    // Test with multiplier 5
-    lab.setOptions({ contestTokenMultiplier: 5 });
-    mock.App.game.wallet.gainContestTokens(10);
-    assert.strictEqual(tokensAwarded, 50 + 50); // + 50
-    assert.strictEqual(lab.getStatus().stats.contestTokensEarned, 100);
-
-    // Test disabled toggle
-    lab.setOptions({ doubleContestTokens: false });
-    mock.App.game.wallet.gainContestTokens(20);
-    assert.strictEqual(tokensAwarded, 100 + 20); // + 20 unmodified
   });
 });

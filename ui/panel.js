@@ -198,11 +198,6 @@
         safariChkShinyEscape: q('#safari-chk-shiny-escape'),
         safariChkAllEscape: q('#safari-chk-all-escape'),
         safariChkInfiniteBalls: q('#safari-chk-infinite-balls'),
-        safariChkDoubleTokens: q('#safari-chk-double-tokens'),
-        safariBtnCtDec: q('#safari-btn-ct-dec'),
-        safariBtnCtInc: q('#safari-btn-ct-inc'),
-        safariInputCtMult: q('#safari-input-ct-mult'),
-        safariCtQuickChips: q('#safari-ct-quick-chips'),
         safariLiveStatus: q('#safari-live-status'),
         safariBallsVal: q('#safari-balls-val'),
         safariLevelVal: q('#safari-level-val'),
@@ -214,7 +209,6 @@
         safariStatCatches: q('#safari-stat-catches'),
         safariStatBalls: q('#safari-stat-balls'),
         safariStatFlees: q('#safari-stat-flees'),
-        safariStatTokens: q('#safari-stat-tokens'),
 
         // Terminal
         terminal: q('#psl-terminal'),
@@ -563,45 +557,6 @@
       }
       if (this.el.safariChkInfiniteBalls) {
         this.el.safariChkInfiniteBalls.addEventListener('change', updateSafariOptions);
-      }
-      if (this.el.safariChkDoubleTokens) {
-        this.el.safariChkDoubleTokens.addEventListener('change', updateSafariOptions);
-      }
-
-      const updateSafariCtMultiplier = async (val) => {
-        let num = Number(val);
-        if (isNaN(num) || num < 1) num = 1;
-        if (num > 100) num = 100;
-        try {
-          const status = await this.bridge.request('SET_SAFARI_OPTIONS', { contestTokenMultiplier: num });
-          this.renderSafariStatus(status);
-        } catch (err) {
-          this.appendLog('ERROR', `Error multiplicador Contest Tokens: ${err.message}`);
-        }
-      };
-
-      if (this.el.safariInputCtMult) {
-        this.el.safariInputCtMult.addEventListener('change', (e) => updateSafariCtMultiplier(e.target.value));
-      }
-      if (this.el.safariBtnCtDec) {
-        this.el.safariBtnCtDec.addEventListener('click', () => {
-          const cur = Number(this.el.safariInputCtMult?.value) || 2;
-          updateSafariCtMultiplier(Math.max(1, cur - 1));
-        });
-      }
-      if (this.el.safariBtnCtInc) {
-        this.el.safariBtnCtInc.addEventListener('click', () => {
-          const cur = Number(this.el.safariInputCtMult?.value) || 2;
-          updateSafariCtMultiplier(Math.min(100, cur + 1));
-        });
-      }
-      if (this.el.safariCtQuickChips) {
-        this.el.safariCtQuickChips.querySelectorAll('.psl-chip').forEach(chip => {
-          chip.addEventListener('click', () => {
-            const val = Number(chip.dataset.safariCtVal);
-            if (!isNaN(val)) updateSafariCtMultiplier(val);
-          });
-        });
       }
 
       if (this.el.safariBtnReset) {
@@ -1459,21 +1414,6 @@
       if (this.el.safariChkInfiniteBalls) {
         this.el.safariChkInfiniteBalls.checked = Boolean(status.infiniteBalls);
       }
-      if (this.el.safariChkDoubleTokens) {
-        this.el.safariChkDoubleTokens.checked = Boolean(status.doubleContestTokens);
-      }
-
-      // Contest Token multiplier input & chips
-      if (this.el.safariInputCtMult) {
-        this.el.safariInputCtMult.value = status.contestTokenMultiplier || 2;
-      }
-      if (this.el.safariCtQuickChips) {
-        const ctMult = status.contestTokenMultiplier || 2;
-        this.el.safariCtQuickChips.querySelectorAll('.psl-chip').forEach(chip => {
-          const val = Number(chip.dataset.safariCtVal);
-          chip.classList.toggle('active', val === ctMult);
-        });
-      }
 
       // Live state
       if (this.el.safariLiveStatus) {
@@ -1527,7 +1467,6 @@
         if (this.el.safariStatCatches) this.el.safariStatCatches.textContent = status.stats.catches || 0;
         if (this.el.safariStatBalls) this.el.safariStatBalls.textContent = status.stats.ballsThrown || 0;
         if (this.el.safariStatFlees) this.el.safariStatFlees.textContent = status.stats.fleesBlocked || 0;
-        if (this.el.safariStatTokens) this.el.safariStatTokens.textContent = `+${(status.stats.contestTokensEarned || 0).toLocaleString()}`;
       }
     }
   }

@@ -498,26 +498,6 @@
               <input type="checkbox" id="safari-chk-infinite-balls" checked />
               <span>♾️ <strong>Safari Balls Infinitas:</strong> Mantiene tus Safari Balls siempre reabastecidas (30).</span>
             </label>
-            <label style="font-size: 11px; color: #38bdf8; display: flex; align-items: center; gap: 6px; cursor: pointer; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 6px;">
-              <input type="checkbox" id="safari-chk-double-tokens" checked />
-              <span>🎟️ <strong>Multiplicador de Contest Tokens (Johto):</strong> Duplica o multiplica los Contest Tokens ganados al capturar Pokémon en el Parque Nacional / Safari de Johto.</span>
-            </label>
-          </div>
-
-          <!-- Contest Tokens Multiplier Config (Johto Safari) -->
-          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; background: rgba(56, 189, 248, 0.08); padding: 6px 10px; border-radius: 8px; border: 1px solid rgba(56, 189, 248, 0.2);">
-            <div style="display: flex; align-items: center; gap: 6px;">
-              <span class="psl-k" style="font-size: 11px; color: #38bdf8;">Multiplicador Contest Tokens:</span>
-              <button id="safari-btn-ct-dec" class="psl-btn psl-btn-ghost" style="padding: 2px 8px; font-weight: bold;">-</button>
-              <input type="number" id="safari-input-ct-mult" min="1" max="100" step="1" value="2" class="psl-input psl-mono" style="width: 50px; text-align: center; padding: 2px 4px;" />
-              <button id="safari-btn-ct-inc" class="psl-btn psl-btn-ghost" style="padding: 2px 8px; font-weight: bold;">+</button>
-            </div>
-            <div style="display: flex; gap: 4px;" id="safari-ct-quick-chips">
-              <button class="psl-chip active" data-safari-ct-val="2">2x (Doble)</button>
-              <button class="psl-chip" data-safari-ct-val="5">5x</button>
-              <button class="psl-chip" data-safari-ct-val="10">10x</button>
-              <button class="psl-chip" data-safari-ct-val="25">25x</button>
-            </div>
           </div>
 
           <!-- Current Battle Readouts -->
@@ -550,11 +530,10 @@
             <div class="psl-card-title" style="font-size: 11px; margin-bottom: 0;">Sesión de Capturas Safari</div>
             <button id="safari-btn-reset-stats" class="psl-btn psl-btn-ghost" style="font-size: 9px; padding: 2px 6px;">Resetear Sesión</button>
           </div>
-          <div class="psl-grid-4" style="margin-top: 6px;">
+          <div class="psl-grid-3" style="margin-top: 6px;">
             <div class="psl-stat-box"><span class="psl-stat-label">Capturados</span><span class="psl-stat-val psl-mono" id="safari-stat-catches" style="color: #4ade80;">0</span></div>
             <div class="psl-stat-box"><span class="psl-stat-label">Bolas Lanzadas</span><span class="psl-stat-val psl-mono" id="safari-stat-balls">0</span></div>
             <div class="psl-stat-box"><span class="psl-stat-label">Huidas Bloqueadas</span><span class="psl-stat-val psl-mono" id="safari-stat-flees" style="color: #38bdf8;">0</span></div>
-            <div class="psl-stat-box"><span class="psl-stat-label">Contest Tokens</span><span class="psl-stat-val psl-mono" id="safari-stat-tokens" style="color: #facc15;">+0</span></div>
           </div>
         </div>
       </div>
