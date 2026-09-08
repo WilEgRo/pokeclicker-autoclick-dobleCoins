@@ -210,6 +210,45 @@
         safariStatBalls: q('#safari-stat-balls'),
         safariStatFlees: q('#safari-stat-flees'),
 
+        // Hatchery & Farm Lab
+        hatcheryStatusPill: q('#hatchery-status-pill'),
+        hatcheryChkAutohatch: q('#hatchery-chk-autohatch'),
+        hatcheryChkAutobreed: q('#hatchery-chk-autobreed'),
+        hatcherySelPriority: q('#hatchery-sel-priority'),
+        hatcheryBtnDec: q('#hatchery-btn-dec'),
+        hatcheryBtnInc: q('#hatchery-btn-inc'),
+        hatcheryInputMult: q('#hatchery-input-mult'),
+        hatcheryQuickChips: q('#hatchery-quick-chips'),
+        hatcherySlotsVal: q('#hatchery-slots-val'),
+        hatcheryQueueVal: q('#hatchery-queue-val'),
+        hatcheryTotalCap: q('#hatchery-total-cap'),
+        farmChkAutoharvest: q('#farm-chk-autoharvest'),
+        farmChkAutoreplant: q('#farm-chk-autoreplant'),
+        farmPlotsVal: q('#farm-plots-val'),
+        farmReadyVal: q('#farm-ready-val'),
+        hatcheryBtnResetStats: q('#hatchery-btn-reset-stats'),
+        hatcheryStatHatched: q('#hatchery-stat-hatched'),
+        hatcheryStatPlaced: q('#hatchery-stat-placed'),
+        farmStatHarvested: q('#farm-stat-harvested'),
+        farmStatReplanted: q('#farm-stat-replanted'),
+
+        // Dungeon Lab
+        dungeonStatusPill: q('#dungeon-status-pill'),
+        dungeonBtnToggle: q('#dungeon-btn-toggle'),
+        dungeonBtnText: q('#dungeon-btn-text'),
+        dungeonChkAutoboss: q('#dungeon-chk-autoboss'),
+        dungeonChkAutochests: q('#dungeon-chk-autochests'),
+        dungeonChkAutorestart: q('#dungeon-chk-autorestart'),
+        dungeonInputMintokens: q('#dungeon-input-mintokens'),
+        dungeonNameVal: q('#dungeon-name-val'),
+        dungeonTimeVal: q('#dungeon-time-val'),
+        dungeonPhaseVal: q('#dungeon-phase-val'),
+        dungeonBtnResetStats: q('#dungeon-btn-reset-stats'),
+        dungeonStatCleared: q('#dungeon-stat-cleared'),
+        dungeonStatBosses: q('#dungeon-stat-bosses'),
+        dungeonStatChests: q('#dungeon-stat-chests'),
+        dungeonStatTiles: q('#dungeon-stat-tiles'),
+
         // Terminal
         terminal: q('#psl-terminal'),
         logCountBadge: q('#psl-log-count')
@@ -238,6 +277,12 @@
           }
           if (tab.dataset.tab === 'tab-safari') {
             this.refreshSafariLab();
+          }
+          if (tab.dataset.tab === 'tab-hatchery') {
+            this.refreshHatcheryLab();
+          }
+          if (tab.dataset.tab === 'tab-dungeon') {
+            this.refreshDungeonLab();
           }
         });
       });
@@ -583,6 +628,125 @@
         });
       }
 
+      // Hatchery & Farm Lab Handlers
+      const updateHatcheryOptions = async () => {
+        try {
+          const opts = {
+            autoHatch: this.el.hatcheryChkAutohatch ? this.el.hatcheryChkAutohatch.checked : true,
+            autoBreed: this.el.hatcheryChkAutobreed ? this.el.hatcheryChkAutobreed.checked : true,
+            breedPriority: this.el.hatcherySelPriority ? this.el.hatcherySelPriority.value : 'efficiency',
+            autoHarvest: this.el.farmChkAutoharvest ? this.el.farmChkAutoharvest.checked : true,
+            autoReplant: this.el.farmChkAutoreplant ? this.el.farmChkAutoreplant.checked : true
+          };
+          const status = await this.bridge.request('SET_HATCHERY_OPTIONS', opts);
+          if (status) this.renderHatcheryStatus(status);
+        } catch (err) {
+          this.appendLog('ERROR', `Error al actualizar opciones de criadero: ${err.message}`);
+        }
+      };
+
+      if (this.el.hatcheryChkAutohatch) this.el.hatcheryChkAutohatch.addEventListener('change', updateHatcheryOptions);
+      if (this.el.hatcheryChkAutobreed) this.el.hatcheryChkAutobreed.addEventListener('change', updateHatcheryOptions);
+      if (this.el.hatcherySelPriority) this.el.hatcherySelPriority.addEventListener('change', updateHatcheryOptions);
+      if (this.el.farmChkAutoharvest) this.el.farmChkAutoharvest.addEventListener('change', updateHatcheryOptions);
+      if (this.el.farmChkAutoreplant) this.el.farmChkAutoreplant.addEventListener('change', updateHatcheryOptions);
+
+      const applyHatcheryMultiplier = async (val) => {
+        const num = Math.min(50, Math.max(1, Math.round(Number(val) || 1)));
+        if (this.el.hatcheryInputMult) this.el.hatcheryInputMult.value = num;
+        try {
+          const status = await this.bridge.request('SET_HATCHERY_OPTIONS', { stepMultiplier: num });
+          if (status) this.renderHatcheryStatus(status);
+          this.appendLog('INFO', `Acelerador de pasos fijado en ${num}x.`);
+        } catch (err) {
+          this.appendLog('ERROR', `Error al actualizar multiplicador: ${err.message}`);
+        }
+      };
+
+      if (this.el.hatcheryBtnDec) {
+        this.el.hatcheryBtnDec.addEventListener('click', () => {
+          const cur = Number(this.el.hatcheryInputMult?.value || 1);
+          applyHatcheryMultiplier(cur - 1);
+        });
+      }
+      if (this.el.hatcheryBtnInc) {
+        this.el.hatcheryBtnInc.addEventListener('click', () => {
+          const cur = Number(this.el.hatcheryInputMult?.value || 1);
+          applyHatcheryMultiplier(cur + 1);
+        });
+      }
+      if (this.el.hatcheryInputMult) {
+        this.el.hatcheryInputMult.addEventListener('change', (e) => {
+          applyHatcheryMultiplier(e.target.value);
+        });
+      }
+      if (this.el.hatcheryQuickChips) {
+        this.el.hatcheryQuickChips.querySelectorAll('.psl-chip').forEach(chip => {
+          chip.addEventListener('click', () => {
+            const val = Number(chip.dataset.hatcheryVal || 1);
+            applyHatcheryMultiplier(val);
+          });
+        });
+      }
+      if (this.el.hatcheryBtnResetStats) {
+        this.el.hatcheryBtnResetStats.addEventListener('click', async () => {
+          try {
+            const status = await this.bridge.request('RESET_HATCHERY_STATS');
+            if (status) this.renderHatcheryStatus(status);
+            this.appendLog('INFO', 'Estadísticas de Criadero & Granja reseteadas.');
+          } catch (err) {
+            this.appendLog('ERROR', `Error al resetear estadísticas: ${err.message}`);
+          }
+        });
+      }
+
+      // Dungeon Lab Handlers
+      if (this.el.dungeonBtnToggle) {
+        this.el.dungeonBtnToggle.addEventListener('click', async () => {
+          try {
+            const curStatus = await this.bridge.request('GET_DUNGEON_STATUS');
+            const willEnable = !curStatus.enabled;
+            const newStatus = await this.bridge.request('SET_DUNGEON_OPTIONS', { enabled: willEnable });
+            if (newStatus) this.renderDungeonStatus(newStatus);
+            this.appendLog('INFO', willEnable ? 'Auto-Dungeon iniciado.' : 'Auto-Dungeon pausado.');
+          } catch (err) {
+            this.appendLog('ERROR', `Error al alternar Auto-Dungeon: ${err.message}`);
+          }
+        });
+      }
+
+      const updateDungeonOptions = async () => {
+        try {
+          const opts = {
+            autoBoss: this.el.dungeonChkAutoboss ? this.el.dungeonChkAutoboss.checked : true,
+            autoChests: this.el.dungeonChkAutochests ? this.el.dungeonChkAutochests.checked : true,
+            autoRestart: this.el.dungeonChkAutorestart ? this.el.dungeonChkAutorestart.checked : true,
+            minTokens: this.el.dungeonInputMintokens ? Number(this.el.dungeonInputMintokens.value) || 0 : 1000
+          };
+          const status = await this.bridge.request('SET_DUNGEON_OPTIONS', opts);
+          if (status) this.renderDungeonStatus(status);
+        } catch (err) {
+          this.appendLog('ERROR', `Error al actualizar opciones de mazmorra: ${err.message}`);
+        }
+      };
+
+      if (this.el.dungeonChkAutoboss) this.el.dungeonChkAutoboss.addEventListener('change', updateDungeonOptions);
+      if (this.el.dungeonChkAutochests) this.el.dungeonChkAutochests.addEventListener('change', updateDungeonOptions);
+      if (this.el.dungeonChkAutorestart) this.el.dungeonChkAutorestart.addEventListener('change', updateDungeonOptions);
+      if (this.el.dungeonInputMintokens) this.el.dungeonInputMintokens.addEventListener('change', updateDungeonOptions);
+
+      if (this.el.dungeonBtnResetStats) {
+        this.el.dungeonBtnResetStats.addEventListener('click', async () => {
+          try {
+            const status = await this.bridge.request('RESET_DUNGEON_STATS');
+            if (status) this.renderDungeonStatus(status);
+            this.appendLog('INFO', 'Estadísticas de Mazmorras reseteadas.');
+          } catch (err) {
+            this.appendLog('ERROR', `Error al resetear estadísticas: ${err.message}`);
+          }
+        });
+      }
+
       if (this.el.btnAuditContext) {
         this.el.btnAuditContext.addEventListener('click', async () => {
           try {
@@ -641,11 +805,15 @@
         this.syncAutoClickStatus();
         this.refreshRewardLab();
         this.refreshSafariLab();
+        this.refreshHatcheryLab();
+        this.refreshDungeonLab();
       });
 
-      // Periodic Safari status polling
+      // Periodic polling
       setInterval(() => {
         this.refreshSafariLab();
+        this.refreshHatcheryLab();
+        this.refreshDungeonLab();
       }, 1500);
     }
 
@@ -1467,6 +1635,115 @@
         if (this.el.safariStatCatches) this.el.safariStatCatches.textContent = status.stats.catches || 0;
         if (this.el.safariStatBalls) this.el.safariStatBalls.textContent = status.stats.ballsThrown || 0;
         if (this.el.safariStatFlees) this.el.safariStatFlees.textContent = status.stats.fleesBlocked || 0;
+      }
+    }
+
+    async refreshHatcheryLab() {
+      try {
+        const status = await this.bridge.request('GET_HATCHERY_STATUS');
+        if (status) this.renderHatcheryStatus(status);
+      } catch (_) {}
+    }
+
+    renderHatcheryStatus(status) {
+      if (!status) return;
+
+      if (this.el.hatcheryStatusPill) {
+        if (!status.autoHatch && !status.autoBreed) {
+          this.el.hatcheryStatusPill.textContent = 'PAUSADO';
+          this.el.hatcheryStatusPill.className = 'psl-pill psl-pill-muted';
+        } else {
+          this.el.hatcheryStatusPill.textContent = `${status.totalActive}/${status.totalCapacity} CAPACIDAD (${status.stepMultiplier}x)`;
+          this.el.hatcheryStatusPill.className = 'psl-pill psl-pill-success';
+        }
+      }
+
+      if (this.el.hatcheryChkAutohatch) this.el.hatcheryChkAutohatch.checked = Boolean(status.autoHatch);
+      if (this.el.hatcheryChkAutobreed) this.el.hatcheryChkAutobreed.checked = Boolean(status.autoBreed);
+      if (this.el.hatcherySelPriority) this.el.hatcherySelPriority.value = status.breedPriority || 'efficiency';
+      if (this.el.farmChkAutoharvest) this.el.farmChkAutoharvest.checked = Boolean(status.autoHarvest);
+      if (this.el.farmChkAutoreplant) this.el.farmChkAutoreplant.checked = Boolean(status.autoReplant);
+
+      if (this.el.hatcheryInputMult) this.el.hatcheryInputMult.value = status.stepMultiplier || 1;
+      if (this.el.hatcheryQuickChips) {
+        this.el.hatcheryQuickChips.querySelectorAll('.psl-chip').forEach(chip => {
+          const val = Number(chip.dataset.hatcheryVal);
+          chip.classList.toggle('active', val === status.stepMultiplier);
+        });
+      }
+
+      if (this.el.hatcherySlotsVal) this.el.hatcherySlotsVal.textContent = `${status.eggsActive} / ${status.eggSlots}`;
+      if (this.el.hatcheryQueueVal) this.el.hatcheryQueueVal.textContent = `${status.queueActive} / ${status.queueSlots}`;
+      if (this.el.hatcheryTotalCap) this.el.hatcheryTotalCap.textContent = `${status.totalActive} / ${status.totalCapacity} Activos`;
+
+      if (this.el.farmPlotsVal) this.el.farmPlotsVal.textContent = `${status.unlockedPlots} Parcelas`;
+      if (this.el.farmReadyVal) this.el.farmReadyVal.textContent = `${status.readyPlots} Maduras`;
+
+      if (status.stats) {
+        if (this.el.hatcheryStatHatched) this.el.hatcheryStatHatched.textContent = status.stats.eggsHatched || 0;
+        if (this.el.hatcheryStatPlaced) this.el.hatcheryStatPlaced.textContent = status.stats.eggsPlaced || 0;
+        if (this.el.farmStatHarvested) this.el.farmStatHarvested.textContent = status.stats.berriesHarvested || 0;
+        if (this.el.farmStatReplanted) this.el.farmStatReplanted.textContent = status.stats.berriesReplanted || 0;
+      }
+    }
+
+    async refreshDungeonLab() {
+      try {
+        const status = await this.bridge.request('GET_DUNGEON_STATUS');
+        if (status) this.renderDungeonStatus(status);
+      } catch (_) {}
+    }
+
+    renderDungeonStatus(status) {
+      if (!status) return;
+
+      const isEnabled = Boolean(status.enabled);
+      if (this.el.dungeonStatusPill) {
+        if (!isEnabled) {
+          this.el.dungeonStatusPill.textContent = 'INACTIVO';
+          this.el.dungeonStatusPill.className = 'psl-pill psl-pill-muted';
+        } else if (status.inDungeon) {
+          this.el.dungeonStatusPill.textContent = 'EN MAZMORRA';
+          this.el.dungeonStatusPill.className = 'psl-pill psl-pill-success';
+        } else {
+          this.el.dungeonStatusPill.textContent = 'ESPERANDO ENTRADA';
+          this.el.dungeonStatusPill.className = 'psl-pill psl-pill-info';
+        }
+      }
+
+      if (this.el.dungeonBtnToggle) {
+        this.el.dungeonBtnToggle.classList.toggle('psl-btn-hero-on', isEnabled);
+        this.el.dungeonBtnToggle.classList.toggle('psl-btn-hero-off', !isEnabled);
+      }
+      if (this.el.dungeonBtnText) {
+        this.el.dungeonBtnText.textContent = isEnabled ? 'DETENER AUTO-MAZMORRA' : 'INICIAR AUTO-MAZMORRA';
+      }
+
+      if (this.el.dungeonChkAutoboss) this.el.dungeonChkAutoboss.checked = Boolean(status.autoBoss);
+      if (this.el.dungeonChkAutochests) this.el.dungeonChkAutochests.checked = Boolean(status.autoChests);
+      if (this.el.dungeonChkAutorestart) this.el.dungeonChkAutorestart.checked = Boolean(status.autoRestart);
+      if (this.el.dungeonInputMintokens) this.el.dungeonInputMintokens.value = status.minTokens !== undefined ? status.minTokens : 1000;
+
+      if (this.el.dungeonNameVal) this.el.dungeonNameVal.textContent = status.dungeonName || 'Ninguna';
+      if (this.el.dungeonTimeVal) this.el.dungeonTimeVal.textContent = status.inDungeon ? `${status.timeLeft}s` : '-';
+      if (this.el.dungeonPhaseVal) {
+        if (status.fightingBoss) {
+          this.el.dungeonPhaseVal.textContent = 'Combate contra Jefe';
+          this.el.dungeonPhaseVal.style.color = '#ef4444';
+        } else if (status.inDungeon) {
+          this.el.dungeonPhaseVal.textContent = 'Explorando Casillas';
+          this.el.dungeonPhaseVal.style.color = '#38bdf8';
+        } else {
+          this.el.dungeonPhaseVal.textContent = 'En Espera';
+          this.el.dungeonPhaseVal.style.color = '#94a3b8';
+        }
+      }
+
+      if (status.stats) {
+        if (this.el.dungeonStatCleared) this.el.dungeonStatCleared.textContent = status.stats.dungeonsCleared || 0;
+        if (this.el.dungeonStatBosses) this.el.dungeonStatBosses.textContent = status.stats.bossesDefeated || 0;
+        if (this.el.dungeonStatChests) this.el.dungeonStatChests.textContent = status.stats.chestsOpened || 0;
+        if (this.el.dungeonStatTiles) this.el.dungeonStatTiles.textContent = status.stats.tilesExplored || 0;
       }
     }
   }

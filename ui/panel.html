@@ -40,6 +40,8 @@
       <button class="psl-tab active" data-tab="tab-autoclick">⚡ Auto Click</button>
       <button class="psl-tab" data-tab="tab-rewards">💰 Rewards Lab</button>
       <button class="psl-tab" data-tab="tab-safari">🎯 Safari Lab</button>
+      <button class="psl-tab" data-tab="tab-hatchery">🌱 Criadero & Granja</button>
+      <button class="psl-tab" data-tab="tab-dungeon">🗝️ Mazmorras</button>
       <button class="psl-tab" data-tab="tab-state">Live State</button>
       <button class="psl-tab" data-tab="tab-overview">Overview</button>
     </div>
@@ -534,6 +536,194 @@
             <div class="psl-stat-box"><span class="psl-stat-label">Capturados</span><span class="psl-stat-val psl-mono" id="safari-stat-catches" style="color: #4ade80;">0</span></div>
             <div class="psl-stat-box"><span class="psl-stat-label">Bolas Lanzadas</span><span class="psl-stat-val psl-mono" id="safari-stat-balls">0</span></div>
             <div class="psl-stat-box"><span class="psl-stat-label">Huidas Bloqueadas</span><span class="psl-stat-val psl-mono" id="safari-stat-flees" style="color: #38bdf8;">0</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: CRIADERO & GRANJA (HOENN READY) -->
+      <div id="tab-hatchery" class="psl-tab-pane">
+        <!-- Hatchery Automation Card -->
+        <div class="psl-card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <div class="psl-card-title" style="margin-bottom: 0;">🌱 Criadero de Huevos Ultrarrápido</div>
+            <span class="psl-pill psl-pill-success" id="hatchery-status-pill">12/12 CAPACIDAD LISTA</span>
+          </div>
+          <p class="psl-text-sm" style="margin: 2px 0 10px 0;">
+            Automatización integral del criadero con soporte para ranuras y cola (hasta 12 huevos en Hoenn), eclosión instantánea y acelerador de pasos.
+          </p>
+
+          <!-- Hatchery Toggles -->
+          <div style="background: rgba(0,0,0,0.2); padding: 8px 10px; border-radius: 6px; margin-bottom: 10px; display: flex; flex-direction: column; gap: 6px;">
+            <label style="font-size: 11px; color: #e2e8f0; display: flex; align-items: center; gap: 6px; cursor: pointer;">
+              <input type="checkbox" id="hatchery-chk-autohatch" checked />
+              <span>🐣 <strong>Eclosión Automática:</strong> Eclosiona los huevos inmediatamente cuando alcanzan el 100%.</span>
+            </label>
+            <label style="font-size: 11px; color: #e2e8f0; display: flex; align-items: center; gap: 6px; cursor: pointer;">
+              <input type="checkbox" id="hatchery-chk-autobreed" checked />
+              <span>🥚 <strong>Colocación Automática (12 Slots/Cola):</strong> Llena al instante las ranuras y la cola disponible con tus mejores Pokémon de nivel 100.</span>
+            </label>
+          </div>
+
+          <!-- Breeding Priority Selector -->
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; background: rgba(0,0,0,0.25); padding: 6px 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
+            <span class="psl-k" style="font-size: 11px;">Prioridad de Crianza:</span>
+            <select id="hatchery-sel-priority" class="psl-select" style="background: #0f172a; color: #38bdf8; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; padding: 4px 8px; font-size: 11px;">
+              <option value="efficiency">⚡ Máxima Eficiencia (Ataque por paso)</option>
+              <option value="attack">⚔️ Mayor Ataque Base</option>
+              <option value="shiny">✨ No-Shinies Primero (Completar Shiny Dex)</option>
+            </select>
+          </div>
+
+          <!-- Step Multiplier Stepper & Chips -->
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; background: rgba(0,0,0,0.25); padding: 6px 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <span class="psl-k" style="font-size: 11px;">Acelerador de Pasos:</span>
+              <button id="hatchery-btn-dec" class="psl-btn psl-btn-ghost" style="padding: 2px 8px; font-weight: bold;">-</button>
+              <input type="number" id="hatchery-input-mult" min="1" max="50" step="1" value="5" class="psl-input psl-mono" style="width: 50px; text-align: center; padding: 2px 4px;" />
+              <button id="hatchery-btn-inc" class="psl-btn psl-btn-ghost" style="padding: 2px 8px; font-weight: bold;">+</button>
+            </div>
+            <div style="display: flex; gap: 4px;" id="hatchery-quick-chips">
+              <button class="psl-chip" data-hatchery-val="1">1x</button>
+              <button class="psl-chip" data-hatchery-val="2">2x</button>
+              <button class="psl-chip active" data-hatchery-val="5">5x</button>
+              <button class="psl-chip" data-hatchery-val="10">10x</button>
+              <button class="psl-chip" data-hatchery-val="25">25x</button>
+              <button class="psl-chip" data-hatchery-val="50">50x</button>
+            </div>
+          </div>
+
+          <!-- Hatchery Live Status -->
+          <div class="psl-grid-3" style="margin-bottom: 8px;">
+            <div class="psl-stat-box">
+              <span class="psl-stat-label">Ranuras de Huevos</span>
+              <span class="psl-stat-val psl-mono" id="hatchery-slots-val">4 / 4</span>
+            </div>
+            <div class="psl-stat-box">
+              <span class="psl-stat-label">Cola de Crianza</span>
+              <span class="psl-stat-val psl-mono" id="hatchery-queue-val">8 / 8</span>
+            </div>
+            <div class="psl-stat-box">
+              <span class="psl-stat-label">Capacidad Total</span>
+              <span class="psl-stat-val psl-mono" id="hatchery-total-cap" style="color: #4ade80;">12 Activos</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Farm Automation Card -->
+        <div class="psl-card">
+          <div class="psl-card-title">🍓 Granja & Cosecha de Bayas</div>
+          <p class="psl-text-sm" style="margin: 2px 0 10px 0;">
+            Cosecha automática en cuanto las bayas maduran para evitar que se marchiten, y replantación continua con la misma semilla respetando SafeLock.
+          </p>
+
+          <div style="background: rgba(0,0,0,0.2); padding: 8px 10px; border-radius: 6px; margin-bottom: 10px; display: flex; flex-direction: column; gap: 6px;">
+            <label style="font-size: 11px; color: #e2e8f0; display: flex; align-items: center; gap: 6px; cursor: pointer;">
+              <input type="checkbox" id="farm-chk-autoharvest" checked />
+              <span>🫐 <strong>Cosecha Automática:</strong> Recolecta las bayas inmediatamente al alcanzar la madurez.</span>
+            </label>
+            <label style="font-size: 11px; color: #e2e8f0; display: flex; align-items: center; gap: 6px; cursor: pointer;">
+              <input type="checkbox" id="farm-chk-autoreplant" checked />
+              <span>🌱 <strong>Replantación Automática:</strong> Vuelve a plantar la misma baya cosechada si hay stock disponible.</span>
+            </label>
+          </div>
+
+          <div class="psl-grid-2" style="margin-bottom: 8px;">
+            <div class="psl-stat-box">
+              <span class="psl-stat-label">Parcelas Desbloqueadas</span>
+              <span class="psl-stat-val psl-mono" id="farm-plots-val">25</span>
+            </div>
+            <div class="psl-stat-box">
+              <span class="psl-stat-label">Bayas Maduras Listas</span>
+              <span class="psl-stat-val psl-mono" id="farm-ready-val" style="color: #facc15;">0</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hatchery & Farm Session Stats -->
+        <div class="psl-card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <div class="psl-card-title" style="margin-bottom: 0;">Estadísticas de Criadero & Granja</div>
+            <button id="hatchery-btn-reset-stats" class="psl-btn psl-btn-ghost" style="font-size: 9px; padding: 2px 6px;">Resetear Estadísticas</button>
+          </div>
+          <div class="psl-grid-4">
+            <div class="psl-stat-box"><span class="psl-stat-label">Huevos Eclosionados</span><span class="psl-stat-val psl-mono" id="hatchery-stat-hatched" style="color: #4ade80;">0</span></div>
+            <div class="psl-stat-box"><span class="psl-stat-label">Huevos Colocados</span><span class="psl-stat-val psl-mono" id="hatchery-stat-placed" style="color: #38bdf8;">0</span></div>
+            <div class="psl-stat-box"><span class="psl-stat-label">Bayas Cosechadas</span><span class="psl-stat-val psl-mono" id="farm-stat-harvested" style="color: #a855f7;">0</span></div>
+            <div class="psl-stat-box"><span class="psl-stat-label">Bayas Replantadas</span><span class="psl-stat-val psl-mono" id="farm-stat-replanted" style="color: #ec4899;">0</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: MAZMORRAS (DUNGEON RUNNER) -->
+      <div id="tab-dungeon" class="psl-tab-pane">
+        <div class="psl-card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <div class="psl-card-title" style="margin-bottom: 0;">🗝️ Explorador Automático de Mazmorras</div>
+            <span class="psl-pill psl-pill-muted" id="dungeon-status-pill">INACTIVO</span>
+          </div>
+          <p class="psl-text-sm" style="margin: 2px 0 10px 0;">
+            Navegación autónoma por casillas, apertura de cofres, combate contra jefes y reinicio en bucle continuo de la mazmorra.
+          </p>
+
+          <!-- Master Action Hero -->
+          <div class="psl-autoclick-hero" style="margin-bottom: 12px;">
+            <button id="dungeon-btn-toggle" class="psl-btn-hero psl-btn-hero-off">
+              <span class="psl-hero-icon">▶</span>
+              <span id="dungeon-btn-text">INICIAR AUTO-MAZMORRA</span>
+            </button>
+          </div>
+
+          <!-- Tactical Options -->
+          <div style="background: rgba(0,0,0,0.2); padding: 8px 10px; border-radius: 6px; margin-bottom: 10px; display: flex; flex-direction: column; gap: 6px;">
+            <label style="font-size: 11px; color: #e2e8f0; display: flex; align-items: center; gap: 6px; cursor: pointer;">
+              <input type="checkbox" id="dungeon-chk-autoboss" checked />
+              <span>⚔️ <strong>Atacar al Jefe al Instante:</strong> Prioriza la casilla del jefe y combate hasta la victoria.</span>
+            </label>
+            <label style="font-size: 11px; color: #e2e8f0; display: flex; align-items: center; gap: 6px; cursor: pointer;">
+              <input type="checkbox" id="dungeon-chk-autochests" checked />
+              <span>📦 <strong>Abrir Cofres Automáticamente:</strong> Recoge todos los cofres accesibles del suelo.</span>
+            </label>
+            <label style="font-size: 11px; color: #e2e8f0; display: flex; align-items: center; gap: 6px; cursor: pointer;">
+              <input type="checkbox" id="dungeon-chk-autorestart" checked />
+              <span>🔄 <strong>Reentrada Automática en Bucle:</strong> Vuelve a ingresar inmediatamente tras ganar.</span>
+            </label>
+          </div>
+
+          <!-- Min Tokens Guard -->
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; background: rgba(0,0,0,0.25); padding: 6px 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
+            <span class="psl-k" style="font-size: 11px;">Reserva mínima de Fichas (DT):</span>
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <input type="number" id="dungeon-input-mintokens" min="0" step="500" value="1000" class="psl-input psl-mono" style="width: 80px; text-align: right; padding: 2px 6px;" />
+              <span class="psl-text-sm" style="color: #94a3b8;">Tokens</span>
+            </div>
+          </div>
+
+          <!-- Live Dungeon Info -->
+          <div class="psl-grid-3" style="margin-bottom: 8px;">
+            <div class="psl-stat-box">
+              <span class="psl-stat-label">Mazmorra Actual</span>
+              <span class="psl-stat-val" id="dungeon-name-val" style="font-size: 11px;">Ninguna</span>
+            </div>
+            <div class="psl-stat-box">
+              <span class="psl-stat-label">Tiempo Restante</span>
+              <span class="psl-stat-val psl-mono" id="dungeon-time-val">-</span>
+            </div>
+            <div class="psl-stat-box">
+              <span class="psl-stat-label">Fase Actual</span>
+              <span class="psl-stat-val" id="dungeon-phase-val" style="font-size: 11px;">En Espera</span>
+            </div>
+          </div>
+
+          <!-- Dungeon Session Stats -->
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px; margin-bottom: 6px;">
+            <div class="psl-card-title" style="font-size: 11px; margin-bottom: 0;">Sesión de Mazmorras</div>
+            <button id="dungeon-btn-reset-stats" class="psl-btn psl-btn-ghost" style="font-size: 9px; padding: 2px 6px;">Resetear Sesión</button>
+          </div>
+          <div class="psl-grid-4">
+            <div class="psl-stat-box"><span class="psl-stat-label">Completadas</span><span class="psl-stat-val psl-mono" id="dungeon-stat-cleared" style="color: #4ade80;">0</span></div>
+            <div class="psl-stat-box"><span class="psl-stat-label">Jefes Vencidos</span><span class="psl-stat-val psl-mono" id="dungeon-stat-bosses" style="color: #facc15;">0</span></div>
+            <div class="psl-stat-box"><span class="psl-stat-label">Cofres Abiertos</span><span class="psl-stat-val psl-mono" id="dungeon-stat-chests" style="color: #38bdf8;">0</span></div>
+            <div class="psl-stat-box"><span class="psl-stat-label">Casillas</span><span class="psl-stat-val psl-mono" id="dungeon-stat-tiles">0</span></div>
           </div>
         </div>
       </div>

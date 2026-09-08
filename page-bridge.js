@@ -201,6 +201,18 @@
     : null);
   runtimeCtx.safariLab = safariLab;
 
+  // Initialize Hatchery & Farm Lab
+  const hatcheryFarmLab = runtimeCtx.hatcheryFarmLab || (window.HatcheryFarmLab
+    ? new window.HatcheryFarmLab({ windowRef: window })
+    : null);
+  runtimeCtx.hatcheryFarmLab = hatcheryFarmLab;
+
+  // Initialize Dungeon Lab
+  const dungeonLab = runtimeCtx.dungeonLab || (window.DungeonLab
+    ? new window.DungeonLab({ windowRef: window })
+    : null);
+  runtimeCtx.dungeonLab = dungeonLab;
+
   // Connect diagnostics events with RewardLab once
   if (diagnostics && rewardLab && !diagnostics.__psl_reward_connected__) {
     diagnostics.__psl_reward_connected__ = true;
@@ -291,6 +303,22 @@
         safariLab.installHooks(window);
       } catch (e) {
         logToUI('WARN', `[SAFARI] Failed installing Safari Lab hooks: ${e.message}`);
+      }
+    }
+
+    if (hatcheryFarmLab) {
+      try {
+        hatcheryFarmLab.installHooks(window);
+      } catch (e) {
+        logToUI('WARN', `[HATCHERY] Failed installing Hatchery Farm Lab hooks: ${e.message}`);
+      }
+    }
+
+    if (dungeonLab) {
+      try {
+        dungeonLab.installHooks(window);
+      } catch (e) {
+        logToUI('WARN', `[DUNGEON] Failed installing Dungeon Lab hooks: ${e.message}`);
       }
     }
 
@@ -1080,6 +1108,77 @@
     if (!safariLab) return { error: 'SafariLab not loaded' };
     const res = safariLab.reset();
     logToUI('INFO', 'Safari Lab settings reset to default.');
+    return res;
+  });
+
+  // HATCHERY & FARM LAB HANDLERS
+  bridge.registerHandler('GET_HATCHERY_STATUS', async () => {
+    if (!hatcheryFarmLab) {
+      return {
+        autoHatch: false,
+        autoBreed: false,
+        stepMultiplier: 1,
+        breedPriority: 'efficiency',
+        autoHarvest: false,
+        autoReplant: false,
+        eggSlots: 4,
+        queueSlots: 0,
+        eggsActive: 0,
+        queueActive: 0,
+        totalCapacity: 4,
+        totalActive: 0,
+        unlockedPlots: 0,
+        readyPlots: 0,
+        stats: { eggsHatched: 0, eggsPlaced: 0, berriesHarvested: 0, berriesReplanted: 0 }
+      };
+    }
+    return hatcheryFarmLab.getStatus();
+  });
+
+  bridge.registerHandler('SET_HATCHERY_OPTIONS', async (options) => {
+    if (!hatcheryFarmLab) return { error: 'HatcheryFarmLab not loaded' };
+    const res = hatcheryFarmLab.setOptions(options);
+    logToUI('INFO', `Hatchery & Farm Lab options updated: ${JSON.stringify(options)}`);
+    return res;
+  });
+
+  bridge.registerHandler('RESET_HATCHERY_STATS', async () => {
+    if (!hatcheryFarmLab) return { error: 'HatcheryFarmLab not loaded' };
+    const res = hatcheryFarmLab.resetStats();
+    logToUI('INFO', 'Hatchery & Farm Lab session stats reset.');
+    return res;
+  });
+
+  // DUNGEON LAB HANDLERS
+  bridge.registerHandler('GET_DUNGEON_STATUS', async () => {
+    if (!dungeonLab) {
+      return {
+        enabled: false,
+        autoBoss: true,
+        autoChests: true,
+        autoRestart: true,
+        minTokens: 1000,
+        inDungeon: false,
+        dungeonName: 'Ninguna',
+        timeLeft: 0,
+        fightingBoss: false,
+        stats: { dungeonsCleared: 0, bossesDefeated: 0, chestsOpened: 0, tilesExplored: 0 }
+      };
+    }
+    return dungeonLab.getStatus();
+  });
+
+  bridge.registerHandler('SET_DUNGEON_OPTIONS', async (options) => {
+    if (!dungeonLab) return { error: 'DungeonLab not loaded' };
+    const res = dungeonLab.setOptions(options);
+    logToUI('INFO', `Dungeon Lab options updated: ${JSON.stringify(options)}`);
+    return res;
+  });
+
+  bridge.registerHandler('RESET_DUNGEON_STATS', async () => {
+    if (!dungeonLab) return { error: 'DungeonLab not loaded' };
+    const res = dungeonLab.resetStats();
+    logToUI('INFO', 'Dungeon Lab session stats reset.');
     return res;
   });
 

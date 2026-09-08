@@ -20,10 +20,12 @@
 
 **PokéClicker AutoClick & DobleCoins** es una potente extensión basada en **Manifest V3** diseñada para integrarse de forma nativa, fluida y segura en el juego web **PokéClicker**. Desarrollada con un diseño moderno y minimalista, incorpora un panel flotante (*Shadow DOM*) que no interfiere con los estilos ni el rendimiento del juego original.
 
-El proyecto combina tres herramientas esenciales para la mejor experiencia de juego:
+El proyecto combina herramientas esenciales para la mejor experiencia de juego:
 1. ⚡ **AutoClick Inteligente:** Clics automáticos ultra rápidos (hasta 30 CPS) con reconocimiento dinámico del tipo de batalla.
 2. 💰 **DobleCoins (Reward Modifier):** Multiplicador seguro de monedas y divisas (`2x`, `5x`, `10x` o personalizado) con protección estricta contra inconsistencias de guardado.
 3. 🎯 **Safari Lab (Catch Booster):** Aumento del ratio de captura (incluyendo 100% garantizado), escudo anti-huida para Pokémon y Shinies, y Safari Balls infinitas.
+4. 🌱 **Criadero & Granja Lab (Hoenn Ready):** Eclosión instantánea de huevos, colocación automática masiva hasta la capacidad máxima de Hoenn (12 ranuras/cola), acelerador de pasos (`1x` a `50x`), y recolección/replantación continua de bayas.
+5. 🗝️ **Mazmorras Automáticas (Auto-Dungeon):** Exploración inteligente y autónoma de casillas, combate directo contra jefes, recolección de cofres y reentrada en bucle con salvaguarda de fichas.
 
 ---
 
@@ -61,10 +63,28 @@ El proyecto combina tres herramientas esenciales para la mejor experiencia de ju
 * **♾️ Safari Balls Infinitas:** Repone tus Safari Balls automáticamente al lanzarlas para que nunca te quedes sin bolas (30) durante una expedición.
 * **Telemetría en Vivo:** Muestra el objetivo actual del Safari, si es Shiny, su ratio base y su ratio efectivo con multiplicador, además de contadores de capturas y huidas bloqueadas.
 
-### 🔬 4. Consola Flotante Moderna & Estado en Vivo
+### 🌱 4. Criadero de Huevos Ultrarrápido & Granja de Bayas (Hoenn Ready)
+* **Capacidad Completa para Hoenn (12 Espacios):** Llena automáticamente tanto las 4 ranuras de incubación como los 8 espacios de la cola de espera de Hoenn en cuanto un huevo eclosiona o se libera un lugar.
+* **Eclosión Instantánea:** Detecta de inmediato los huevos listos al 100% y los eclosiona sin intervención manual.
+* **Acelerador de Pasos (1x a 50x):** Multiplica de forma orgánica los pasos acumulados por cada combate y ruta, logrando que los huevos eclosionen a velocidad récord.
+* **Prioridades Inteligentes de Crianza:**
+  * ⚡ **Máxima Eficiencia:** Prioriza los Pokémon de nivel 100 que más ganancia de ataque otorgan por paso (`breedingEfficiency`).
+  * ⚔️ **Mayor Ataque Base:** Ordena por potencia bruta de ataque.
+  * ✨ **No-Shinies Primero:** Prioriza a los Pokémon no variocolor para completar tu Shiny Pokédex mucho más rápido.
+* **Cosecha Automática de Bayas:** Recolecta las bayas en el momento exacto en que maduran para evitar que se marchiten en el campo, respetando parcelas bloqueadas con SafeLock.
+* **Replantación Continua:** Vuelve a sembrar de forma automática la misma variedad de baya cosechada siempre que cuentes con existencias.
+
+### 🗝️ 5. Mazmorras Automáticas (Auto-Dungeon Runner)
+* **Navegación Autónoma por Casillas:** Algoritmo de exploración que recorre casillas no visitadas, encuentra cofres y busca el camino hacia el jefe.
+* **Combate Automático contra Jefes:** Inicia el combate contra el jefe de mazmorra tan pronto se descubre su casilla y ejecuta ataques continuos hasta ganar.
+* **Apertura Instantánea de Cofres:** Recoge el contenido de todos los cofres accesibles del suelo.
+* **Reentrada Continua en Bucle:** Al derrotar al jefe y finalizar la mazmorra, vuelve a iniciarla inmediatamente.
+* **Salvaguarda de Fichas (Min Tokens):** Establece una reserva mínima de Dungeon Tokens (ej. 1,000 DT) para que el bucle no agote tus recursos accidentalmente.
+
+### 🔬 6. Consola Flotante Moderna & Estado en Vivo
 * **Diseño Glassmorphism / Dark Mode:** Interfaz elegante, flotante, arrastrable y minimizable construida bajo Shadow DOM aislado.
 * **Live State Monitor:** Consulta instantánea de todos los saldos de la billetera (`Wallet`), estadísticas de captura, encuentros shiny y contadores de combate.
-* **Pestañas Simplificadas y Enfocadas:** Interfaz limpia con las herramientas que realmente usas (`Auto Click`, `Rewards Lab`, `Safari Lab`, `Live State` y `Overview`).
+* **Pestañas Especializadas:** Acceso rápido y modular a `⚡ Auto Click`, `💰 Rewards Lab`, `🎯 Safari Lab`, `🌱 Criadero & Granja`, `🗝️ Mazmorras`, `Live State` y `Overview`.
 
 ---
 
@@ -106,11 +126,11 @@ La consola flotante aparecerá automáticamente en la esquina superior derecha d
 ## 🎮 Guía de Uso
 
 ```
-┌──────────────────────────────────────────────────────────────┐
-│  POKÉCLICKER LAB: AutoClick, DobleCoins & Safari Lab         │
-├──────────────────────────────────────────────────────────────┤
-│  [⚡ Auto Click] [💰 Rewards Lab] [🎯 Safari Lab] [State] ...  │
-└──────────────────────────────────────────────────────────────┘
+┌────────────────────────────────────────────────────────────────────────────────────────┐
+│  POKÉCLICKER LAB: AutoClick, DobleCoins, Safari, Criadero & Mazmorras                 │
+├────────────────────────────────────────────────────────────────────────────────────────┤
+│  [⚡ Auto Click] [💰 Rewards] [🎯 Safari] [🌱 Criadero & Granja] [🗝️ Mazmorras] ...  │
+└────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ### Activación del AutoClick
@@ -132,13 +152,32 @@ La consola flotante aparecerá automáticamente en la esquina superior derecha d
 3. Asegúrate de tener marcada la opción **✨ Protección Anti-Huida de Shinies** o **🚫 Prevenir Toda Huida**.
 4. ¡Ingresa a la Zona Safari! Al lanzar una Safari Ball, el Pokémon será capturado de forma limpia e instantánea, y tus bolas se mantendrán reabastecidas.
 
+### Automatización del Criadero y Granja de Bayas (Hoenn)
+1. Abre la pestaña **`🌱 Criadero & Granja`**.
+2. Asegúrate de tener activas las casillas **🐣 Eclosión Automática** y **🥚 Colocación Automática (12 Slots/Cola)**.
+3. Elige tu **Prioridad de Crianza**:
+   - `⚡ Máxima Eficiencia` para maximizar el incremento de ataque por paso.
+   - `⚔️ Mayor Ataque Base` para criar a tus atacantes más poderosos.
+   - `✨ No-Shinies Primero` para obtener huevos de Pokémon que aún no tienes en su versión variocolor.
+4. Ajusta el **Acelerador de Pasos** (ej. `5x`, `10x` o `25x`) para acelerar el ritmo de eclosión según tu preferencia.
+5. Para la Granja, deja activadas las casillas **🫐 Cosecha Automática** y **🌱 Replantación Automática** para recolectar las bayas antes de marchitarse y sembrar de nuevo automáticamente.
+
+### Exploración Automática de Mazmorras (Dungeon Runner)
+1. Abre la pestaña **`🗝️ Mazmorras`**.
+2. Configura las opciones tácticas:
+   - **⚔️ Atacar al Jefe al Instante:** Avanza hacia la casilla del jefe y combate hasta vencerlo.
+   - **📦 Abrir Cofres Automáticamente:** Recoge todos los cofres del calabozo.
+   - **🔄 Reentrada Automática en Bucle:** Entra una y otra vez para farmear la mazmorra sin interrupciones.
+3. Define tu **Reserva mínima de Fichas (DT)** (ej. `1000`) como salvaguarda de tus recursos.
+4. Presiona el botón grande **`INICIAR AUTO-MAZMORRA`** e ingresa a cualquier mazmorra desde el mapa. ¡La extensión se encargará de todo el recorrido!
+
 ---
 
 ## 📂 Estructura del Proyecto
 
 ```text
 pokeclicker-autoclick-dobleCoins/
-├── manifest.json              # Configuración Manifest V3 y recursos
+├── manifest.json              # Configuración Manifest V3 y recursos web
 ├── background.js             # Service Worker de ciclo de vida en segundo plano
 ├── content.js                # Content script: puente con MAIN world y Shadow DOM
 ├── page-bridge.js            # Inyección en el contexto de ejecución de PokéClicker
@@ -162,17 +201,23 @@ pokeclicker-autoclick-dobleCoins/
 │   ├── rewards/              # Motor de DobleCoins y economía
 │   │   ├── battle-reward-modifier.js  # Multiplicador controlado en tiempo real
 │   │   └── reward-economy-lab.js      # Monitor y telemetría de wallet
-│   └── safari/               # 🎯 Motor de Zona Safari & Catch Booster
-│       └── safari-lab.js     # Captura 100%, anti-huida y bolas infinitas
+│   ├── safari/               # 🎯 Motor de Zona Safari & Catch Booster
+│   │   └── safari-lab.js     # Captura 100%, anti-huida y bolas infinitas
+│   ├── hatchery/             # 🌱 Motor de Criadero (12 slots) & Granja de Bayas
+│   │   └── hatchery-farm-lab.js # Eclosión, auto-crianza y cosecha de bayas
+│   └── dungeon/              # 🗝️ Motor de Mazmorras Automáticas
+│       └── dungeon-lab.js    # Pathfinding, auto-cofres, auto-boss y loop
 │
 ├── ui/                       # Interfaz visual de usuario
-│   ├── panel.html            # Plantilla estructural de la consola (Pestañas optimizadas)
+│   ├── panel.html            # Plantilla estructural de la consola
 │   ├── panel.css             # Estilos oscuros / glassmorphism
 │   └── panel.js              # Controlador interactivo y enlace de eventos
 │
-├── test/                     # Pruebas unitarias automatizadas (160 tests)
+├── test/                     # Pruebas unitarias automatizadas (176 tests)
 │   ├── inspector.test.js     # Pruebas de núcleo
 │   ├── safari-lab.test.js    # Pruebas de SafariLab
+│   ├── hatchery-farm-lab.test.js # Pruebas del Criadero y Granja
+│   ├── dungeon-lab.test.js   # Pruebas del Explorador de Mazmorras
 │   └── ...                   # Suites de recompensas y runtime
 │
 ├── package.json              # Metadata y scripts de prueba
@@ -184,7 +229,7 @@ pokeclicker-autoclick-dobleCoins/
 
 ## 🧪 Pruebas Unitarias
 
-Para ejecutar la suite de pruebas localmente y validar la integridad de los inspectores:
+Para ejecutar la suite de pruebas localmente y validar la integridad de todos los módulos:
 
 ```bash
 npm test

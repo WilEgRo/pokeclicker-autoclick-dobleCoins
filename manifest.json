@@ -41,6 +41,8 @@
         "modules/rewards/reward-economy-lab.js",
         "modules/rewards/battle-reward-modifier.js",
         "modules/safari/safari-lab.js",
+        "modules/hatchery/hatchery-farm-lab.js",
+        "modules/dungeon/dungeon-lab.js",
         "page-bridge.js",
         "ui/panel.html",
         "ui/panel.css"
