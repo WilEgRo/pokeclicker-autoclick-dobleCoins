@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "PokéClicker Security Lab",
-  "version": "1.0.0",
+  "version": "0.2.0",
   "description": "Educational runtime inspector, research console and auto-clicker for PokéClicker client analysis.",
   "permissions": [],
   "host_permissions": [
