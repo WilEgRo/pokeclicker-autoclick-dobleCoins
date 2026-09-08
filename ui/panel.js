@@ -83,6 +83,7 @@
         rwdValDiamonds: q('#rwd-val-diamonds'),
         rwdValFarm: q('#rwd-val-farm'),
         rwdValBp: q('#rwd-val-bp'),
+        rwdValCt: q('#rwd-val-ct'),
         rwdLastConfidence: q('#rwd-last-confidence'),
         rwdLastBattle: q('#rwd-last-battle'),
         rwdLastDelta: q('#rwd-last-delta'),
@@ -118,6 +119,7 @@
         modCurrMoney: q('#mod-curr-money'),
         modCurrDt: q('#mod-curr-dt'),
         modCurrQp: q('#mod-curr-qp'),
+        modCurrCt: q('#mod-curr-ct'),
         modLastVerify: q('#mod-last-verify'),
         modReadoutOrig: q('#mod-readout-orig'),
         modReadoutEff: q('#mod-readout-eff'),
@@ -161,6 +163,7 @@
         statDiamonds: q('#stat-wallet-diamonds'),
         statFarm: q('#stat-wallet-farm'),
         statBattle: q('#stat-wallet-battle'),
+        statCt: q('#stat-wallet-ct'),
         statClickAttacks: q('#stat-click-attacks'),
         statCaptured: q('#stat-captured'),
         statShinyCaptured: q('#stat-shiny-captured'),
@@ -195,6 +198,11 @@
         safariChkShinyEscape: q('#safari-chk-shiny-escape'),
         safariChkAllEscape: q('#safari-chk-all-escape'),
         safariChkInfiniteBalls: q('#safari-chk-infinite-balls'),
+        safariChkDoubleTokens: q('#safari-chk-double-tokens'),
+        safariBtnCtDec: q('#safari-btn-ct-dec'),
+        safariBtnCtInc: q('#safari-btn-ct-inc'),
+        safariInputCtMult: q('#safari-input-ct-mult'),
+        safariCtQuickChips: q('#safari-ct-quick-chips'),
         safariLiveStatus: q('#safari-live-status'),
         safariBallsVal: q('#safari-balls-val'),
         safariLevelVal: q('#safari-level-val'),
@@ -206,6 +214,7 @@
         safariStatCatches: q('#safari-stat-catches'),
         safariStatBalls: q('#safari-stat-balls'),
         safariStatFlees: q('#safari-stat-flees'),
+        safariStatTokens: q('#safari-stat-tokens'),
 
         // Terminal
         terminal: q('#psl-terminal'),
@@ -457,6 +466,9 @@
       if (this.el.modCurrQp) {
         this.el.modCurrQp.addEventListener('click', () => toggleModifierCurrency('questPoint', this.el.modCurrQp));
       }
+      if (this.el.modCurrCt) {
+        this.el.modCurrCt.addEventListener('click', () => toggleModifierCurrency('contestToken', this.el.modCurrCt));
+      }
 
       // Actions
       if (this.el.btnRefresh) this.el.btnRefresh.addEventListener('click', () => this.refreshRuntime());
@@ -533,7 +545,8 @@
           const options = {
             preventShinyEscape: this.el.safariChkShinyEscape ? this.el.safariChkShinyEscape.checked : true,
             preventEscape: this.el.safariChkAllEscape ? this.el.safariChkAllEscape.checked : false,
-            infiniteBalls: this.el.safariChkInfiniteBalls ? this.el.safariChkInfiniteBalls.checked : true
+            infiniteBalls: this.el.safariChkInfiniteBalls ? this.el.safariChkInfiniteBalls.checked : true,
+            doubleContestTokens: this.el.safariChkDoubleTokens ? this.el.safariChkDoubleTokens.checked : true
           };
           const status = await this.bridge.request('SET_SAFARI_OPTIONS', options);
           this.renderSafariStatus(status);
@@ -550,6 +563,45 @@
       }
       if (this.el.safariChkInfiniteBalls) {
         this.el.safariChkInfiniteBalls.addEventListener('change', updateSafariOptions);
+      }
+      if (this.el.safariChkDoubleTokens) {
+        this.el.safariChkDoubleTokens.addEventListener('change', updateSafariOptions);
+      }
+
+      const updateSafariCtMultiplier = async (val) => {
+        let num = Number(val);
+        if (isNaN(num) || num < 1) num = 1;
+        if (num > 100) num = 100;
+        try {
+          const status = await this.bridge.request('SET_SAFARI_OPTIONS', { contestTokenMultiplier: num });
+          this.renderSafariStatus(status);
+        } catch (err) {
+          this.appendLog('ERROR', `Error multiplicador Contest Tokens: ${err.message}`);
+        }
+      };
+
+      if (this.el.safariInputCtMult) {
+        this.el.safariInputCtMult.addEventListener('change', (e) => updateSafariCtMultiplier(e.target.value));
+      }
+      if (this.el.safariBtnCtDec) {
+        this.el.safariBtnCtDec.addEventListener('click', () => {
+          const cur = Number(this.el.safariInputCtMult?.value) || 2;
+          updateSafariCtMultiplier(Math.max(1, cur - 1));
+        });
+      }
+      if (this.el.safariBtnCtInc) {
+        this.el.safariBtnCtInc.addEventListener('click', () => {
+          const cur = Number(this.el.safariInputCtMult?.value) || 2;
+          updateSafariCtMultiplier(Math.min(100, cur + 1));
+        });
+      }
+      if (this.el.safariCtQuickChips) {
+        this.el.safariCtQuickChips.querySelectorAll('.psl-chip').forEach(chip => {
+          chip.addEventListener('click', () => {
+            const val = Number(chip.dataset.safariCtVal);
+            if (!isNaN(val)) updateSafariCtMultiplier(val);
+          });
+        });
       }
 
       if (this.el.safariBtnReset) {
@@ -831,6 +883,7 @@
           if (this.el.rwdValDiamonds) this.el.rwdValDiamonds.textContent = typeof w.Diamond === 'number' ? w.Diamond.toLocaleString() : '-';
           if (this.el.rwdValFarm) this.el.rwdValFarm.textContent = typeof w.FarmPoint === 'number' ? w.FarmPoint.toLocaleString() : '-';
           if (this.el.rwdValBp) this.el.rwdValBp.textContent = typeof w.BattlePoint === 'number' ? w.BattlePoint.toLocaleString() : '-';
+          if (this.el.rwdValCt) this.el.rwdValCt.textContent = typeof w.ContestToken === 'number' ? w.ContestToken.toLocaleString() : '-';
         }
 
         // Render last reward
@@ -917,6 +970,10 @@
               if (this.el.modCurrQp) {
                 if (mod.enabledCurrencies.questPoint) this.el.modCurrQp.classList.add('active');
                 else this.el.modCurrQp.classList.remove('active');
+              }
+              if (this.el.modCurrCt) {
+                if (mod.enabledCurrencies.contestToken) this.el.modCurrCt.classList.add('active');
+                else this.el.modCurrCt.classList.remove('active');
               }
             }
 
@@ -1230,6 +1287,9 @@
       this.el.statDiamonds.textContent = typeof wallet.Diamond === 'number' ? wallet.Diamond.toLocaleString() : (wallet.Diamond || '-');
       this.el.statFarm.textContent = typeof wallet.FarmPoint === 'number' ? wallet.FarmPoint.toLocaleString() : (wallet.FarmPoint || '-');
       this.el.statBattle.textContent = typeof wallet.BattlePoint === 'number' ? wallet.BattlePoint.toLocaleString() : (wallet.BattlePoint || '-');
+      if (this.el.statCt) {
+        this.el.statCt.textContent = typeof wallet.ContestToken === 'number' ? wallet.ContestToken.toLocaleString() : (wallet.ContestToken || '-');
+      }
 
       const stats = data.snapshot ? data.snapshot.statistics : {};
       this.el.statClickAttacks.textContent = stats.clickAttacks !== undefined ? stats.clickAttacks.toLocaleString() : '-';
@@ -1399,6 +1459,21 @@
       if (this.el.safariChkInfiniteBalls) {
         this.el.safariChkInfiniteBalls.checked = Boolean(status.infiniteBalls);
       }
+      if (this.el.safariChkDoubleTokens) {
+        this.el.safariChkDoubleTokens.checked = Boolean(status.doubleContestTokens);
+      }
+
+      // Contest Token multiplier input & chips
+      if (this.el.safariInputCtMult) {
+        this.el.safariInputCtMult.value = status.contestTokenMultiplier || 2;
+      }
+      if (this.el.safariCtQuickChips) {
+        const ctMult = status.contestTokenMultiplier || 2;
+        this.el.safariCtQuickChips.querySelectorAll('.psl-chip').forEach(chip => {
+          const val = Number(chip.dataset.safariCtVal);
+          chip.classList.toggle('active', val === ctMult);
+        });
+      }
 
       // Live state
       if (this.el.safariLiveStatus) {
@@ -1452,6 +1527,7 @@
         if (this.el.safariStatCatches) this.el.safariStatCatches.textContent = status.stats.catches || 0;
         if (this.el.safariStatBalls) this.el.safariStatBalls.textContent = status.stats.ballsThrown || 0;
         if (this.el.safariStatFlees) this.el.safariStatFlees.textContent = status.stats.fleesBlocked || 0;
+        if (this.el.safariStatTokens) this.el.safariStatTokens.textContent = `+${(status.stats.contestTokensEarned || 0).toLocaleString()}`;
       }
     }
   }

@@ -48,7 +48,8 @@
     'DungeonToken',
     'Diamond',
     'FarmPoint',
-    'BattlePoint'
+    'BattlePoint',
+    'ContestToken'
   ];
 
   class RewardEconomyLab {
@@ -102,6 +103,7 @@
         diamondsEarned: 0,
         farmPointsEarned: 0,
         battlePointsEarned: 0,
+        contestTokensEarned: 0,
         unknownRewardsCount: 0,
         questRewardsCount: 0,
         dungeonRewardsCount: 0
@@ -140,7 +142,8 @@
           DungeonToken: null,
           Diamond: null,
           FarmPoint: null,
-          BattlePoint: null
+          BattlePoint: null,
+          ContestToken: null
         }
       };
 
@@ -271,6 +274,16 @@
       });
       if (questOk) installed.push('App.game.quests.claimReward');
       else failed.push('App.game.quests.claimReward');
+
+      // Optional: Contest tokens method (Johto / Contests)
+      if (root.App?.game?.wallet && typeof root.App.game.wallet.gainContestTokens === 'function') {
+        const ctOk = instrumentation.instrument(root, 'App.game.wallet.gainContestTokens', {
+          id: 'REWARD_LAB',
+          onBefore: (fnPath, args) => this.handleEconomyMethodBefore(fnPath, args, true),
+          onAfter: (fnPath, args, result, error) => this.handleEconomyMethodAfter(fnPath, args, result, error, true)
+        });
+        if (ctOk) installed.push('App.game.wallet.gainContestTokens');
+      }
 
       this.hooksInstalled = (failed.length === 0 && installed.length > 0);
       return {

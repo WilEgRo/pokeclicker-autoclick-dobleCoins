@@ -79,11 +79,12 @@
         timestamp: null
       };
 
-      // Currency Selection (Money, Dungeon Tokens, Quest Points)
+      // Currency Selection (Money, Dungeon Tokens, Quest Points, Contest Tokens)
       this.enabledCurrencies = {
         money: true,
         dungeonToken: false,
-        questPoint: false
+        questPoint: false,
+        contestToken: false
       };
 
       if (options.enabledCurrencies) {
@@ -108,6 +109,7 @@
       if (currencyVal === 3 || currencyVal === 'diamond') return 'diamond';
       if (currencyVal === 4 || currencyVal === 'farmPoint') return 'farmPoint';
       if (currencyVal === 5 || currencyVal === 'battlePoint') return 'battlePoint';
+      if (currencyVal === 6 || currencyVal === 'contestToken') return 'contestToken';
       return 'unknown';
     }
 
@@ -119,6 +121,7 @@
         if (typeof currencies.money === 'boolean') this.enabledCurrencies.money = currencies.money;
         if (typeof currencies.dungeonToken === 'boolean') this.enabledCurrencies.dungeonToken = currencies.dungeonToken;
         if (typeof currencies.questPoint === 'boolean') this.enabledCurrencies.questPoint = currencies.questPoint;
+        if (typeof currencies.contestToken === 'boolean') this.enabledCurrencies.contestToken = currencies.contestToken;
       }
       this.logTrace('MODIFIER_CURRENCIES_CHANGED', { enabledCurrencies: { ...this.enabledCurrencies } });
       return { ...this.enabledCurrencies };
@@ -564,6 +567,62 @@
           };
           this.logTrace('QUEST_POINT_REWARD_MODIFIED', {
             currency: 'QuestPoint',
+            originalAmount: incAmount,
+            multiplier: this.multiplier,
+            effectiveAmount,
+            timestamp: Date.now()
+          });
+
+          const modifiedAmountObj = Object.assign({}, amountObj, {
+            amount: effectiveAmount
+          });
+
+          if (typeof amountObj.constructor === 'function' && amountObj.constructor.name === 'Amount') {
+            try {
+              const copy = new amountObj.constructor(effectiveAmount, amountObj.currency);
+              return [copy];
+            } catch (_) {}
+          }
+
+          return [modifiedAmountObj];
+        }
+
+        // Case 4: CONTEST TOKENS (Johto Safari / Bug Catching Contest / Contests)
+        if (currType === 'contestToken' && this.enabledCurrencies.contestToken) {
+          const effectiveAmount = Math.floor(incAmount * this.multiplier);
+
+          if (this.mode === MODES.SIMULATION) {
+            this.stats.simulatedCount++;
+            this.lastResult = {
+              status: 'SIMULATED',
+              currency: 'ContestToken',
+              original: incAmount,
+              effective: effectiveAmount,
+              applied: incAmount,
+              timestamp: Date.now()
+            };
+            this.logTrace('CONTEST_TOKEN_REWARD_SIMULATED', {
+              currency: 'ContestToken',
+              originalAmount: incAmount,
+              multiplier: this.multiplier,
+              effectiveAmount,
+              timestamp: Date.now()
+            });
+            return args;
+          }
+
+          // ACTIVE MODE
+          this.stats.modifiedCount++;
+          this.lastResult = {
+            status: 'VERIFIED',
+            currency: 'ContestToken',
+            original: incAmount,
+            effective: effectiveAmount,
+            applied: effectiveAmount,
+            timestamp: Date.now()
+          };
+          this.logTrace('CONTEST_TOKEN_REWARD_MODIFIED', {
+            currency: 'ContestToken',
             originalAmount: incAmount,
             multiplier: this.multiplier,
             effectiveAmount,

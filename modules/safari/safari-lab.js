@@ -63,17 +63,21 @@
       this.preventEscape = options.preventEscape !== undefined ? Boolean(options.preventEscape) : false;
       this.preventShinyEscape = options.preventShinyEscape !== undefined ? Boolean(options.preventShinyEscape) : true;
       this.infiniteBalls = options.infiniteBalls !== undefined ? Boolean(options.infiniteBalls) : true;
+      this.doubleContestTokens = options.doubleContestTokens !== undefined ? Boolean(options.doubleContestTokens) : true;
+      this.contestTokenMultiplier = options.contestTokenMultiplier !== undefined ? Number(options.contestTokenMultiplier) : 2;
 
       this.hooksInstalled = false;
       this.origCalcCapture = null;
       this.origThrowBall = null;
       this.origEscapeDesc = null;
+      this.origGainContestTokens = null;
 
       this.stats = {
         encounters: 0,
         catches: 0,
         ballsThrown: 0,
-        fleesBlocked: 0
+        fleesBlocked: 0,
+        contestTokensEarned: 0
       };
 
       this.lastEncounter = {
@@ -100,6 +104,8 @@
             if (saved.preventEscape !== undefined) this.preventEscape = Boolean(saved.preventEscape);
             if (saved.preventShinyEscape !== undefined) this.preventShinyEscape = Boolean(saved.preventShinyEscape);
             if (saved.infiniteBalls !== undefined) this.infiniteBalls = Boolean(saved.infiniteBalls);
+            if (saved.doubleContestTokens !== undefined) this.doubleContestTokens = Boolean(saved.doubleContestTokens);
+            if (saved.contestTokenMultiplier !== undefined) this.contestTokenMultiplier = Number(saved.contestTokenMultiplier);
           }
         }
       } catch (_) {}
@@ -113,7 +119,9 @@
             multiplier: this.multiplier,
             preventEscape: this.preventEscape,
             preventShinyEscape: this.preventShinyEscape,
-            infiniteBalls: this.infiniteBalls
+            infiniteBalls: this.infiniteBalls,
+            doubleContestTokens: this.doubleContestTokens,
+            contestTokenMultiplier: this.contestTokenMultiplier
           }));
         }
       } catch (_) {}
@@ -219,6 +227,32 @@
         failed.push('SafariBattle.throwBall');
       }
 
+      // 4. Hook App.game.wallet.gainContestTokens for Safari Contest Tokens (Johto)
+      const walletObj = root.App?.game?.wallet;
+      if (walletObj && typeof walletObj.gainContestTokens === 'function') {
+        if (!this.origGainContestTokens) {
+          this.origGainContestTokens = walletObj.gainContestTokens;
+          walletObj.gainContestTokens = function (base, ignoreBonus) {
+            let mult = 1;
+            // Check if BattleRewardModifier is actively multiplying contestToken to avoid double-multiplying
+            const brm = root.__PSL_RUNTIME_CONTEXT__?.rewardModifier || root.rewardModifier;
+            const brmHandling = brm && brm.mode === 'ACTIVE' && brm.enabledCurrencies?.contestToken;
+
+            if (self.doubleContestTokens && !brmHandling) {
+              mult = self.contestTokenMultiplier || 2;
+            }
+
+            const effective = Math.floor(base * mult);
+            if (mult > 1) {
+              self.stats.contestTokensEarned = (self.stats.contestTokensEarned || 0) + effective;
+            }
+
+            return self.origGainContestTokens.call(this, effective, ignoreBonus);
+          };
+        }
+        installed.push('App.game.wallet.gainContestTokens');
+      }
+
       this.hooksInstalled = installed.length > 0;
       return {
         success: this.hooksInstalled,
@@ -248,6 +282,8 @@
       if (typeof opts.preventEscape === 'boolean') this.preventEscape = opts.preventEscape;
       if (typeof opts.preventShinyEscape === 'boolean') this.preventShinyEscape = opts.preventShinyEscape;
       if (typeof opts.infiniteBalls === 'boolean') this.infiniteBalls = opts.infiniteBalls;
+      if (typeof opts.doubleContestTokens === 'boolean') this.doubleContestTokens = opts.doubleContestTokens;
+      if (typeof opts.contestTokenMultiplier === 'number') this.contestTokenMultiplier = Math.max(1, Math.round(opts.contestTokenMultiplier));
       this.saveSettings();
       return this.getStatus();
     }
@@ -257,7 +293,8 @@
         encounters: 0,
         catches: 0,
         ballsThrown: 0,
-        fleesBlocked: 0
+        fleesBlocked: 0,
+        contestTokensEarned: 0
       };
       return this.getStatus();
     }
@@ -268,6 +305,8 @@
       this.preventEscape = false;
       this.preventShinyEscape = true;
       this.infiniteBalls = true;
+      this.doubleContestTokens = true;
+      this.contestTokenMultiplier = 2;
       this.saveSettings();
       return this.getStatus();
     }
@@ -304,6 +343,8 @@
         preventEscape: this.preventEscape,
         preventShinyEscape: this.preventShinyEscape,
         infiniteBalls: this.infiniteBalls,
+        doubleContestTokens: this.doubleContestTokens,
+        contestTokenMultiplier: this.contestTokenMultiplier,
         hooksInstalled: this.hooksInstalled,
         inSafari,
         inBattle,
